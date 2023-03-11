@@ -8,12 +8,13 @@ import (
 )
 
 type Flight struct {
-	ID             uuid.UUID `json:"flightID"`
-	Date           time.Time `json:"date"`
-	Departure      Location  `json:"departure" gorm:"foreignKey:locationID;references:ID"`
-	Arrival        Location  `json:"arrival"`
-	PassengerCount int       `json:"passengerCount"`
-	Capacity       int       `json:"capacity"`
+	ID   uuid.UUID `json:"flightID"`
+	Date time.Time `json:"date"`
+	//LocationID     string    `json:"-"`
+	Departure      Location `json:"departure" gorm:"not null;type:string"`
+	Arrival        Location `json:"arrival" gorm:"not null;type:string"`
+	PassengerCount int      `json:"passengerCount"`
+	Capacity       int      `json:"capacity"`
 }
 
 func (flight *Flight) BeforeCreate(scope *gorm.DB) error {

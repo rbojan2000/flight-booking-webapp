@@ -5,7 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7a996038-b1cf-4a2c-b766-c0f8a7d20e6f" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/handler/UserHandler.go" beforeDir="false" afterPath="$PROJECT_DIR$/handler/UserHandler.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/Flight.go" beforeDir="false" afterPath="$PROJECT_DIR$/model/Flight.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
