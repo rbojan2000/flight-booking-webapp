@@ -20,10 +20,15 @@ func initDB() *gorm.DB {
 		print(err)
 		return nil
 	}
-
+	database.AutoMigrate(&model.Location{})
 	database.AutoMigrate(&model.User{})
+	database.AutoMigrate(&model.Flight{})
+	database.AutoMigrate(&model.Ticket{})
 
-	database.Exec("INSERT IGNORE INTO users VALUES ('aec7e123-233d-4a09-a289-75308ea5b7e6', 'David')")
+	//database.Exec("INSERT IGNORE INTO users VALUES ('aec7e123-233d-4a09-a289-75308ea5b7e6', 'David', 'Mijailovic', 'david@mail.com', 'david', 3, )")
+	//database.Exec("INSERT IGNORE INTO flights VALUES ('aec7e123-233d-4a09-a289-75308ea5b7e6', 'David')")
+	//database.Exec("INSERT IGNORE INTO locations VALUES ('aec7e123-233d-4a09-a289-75308ea5b7e6', 'David')")
+	//database.Exec("INSERT IGNORE INTO tickets VALUES ('aec7e123-233d-4a09-a289-75308ea5b7e6', 'David')")
 	return database
 }
 

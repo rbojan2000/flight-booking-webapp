@@ -17,14 +17,14 @@ type UserHandler struct {
 func (handler *UserHandler) Get(writer http.ResponseWriter, req *http.Request) {
 	id := mux.Vars(req)["id"]
 	log.Printf("User sa id-em %s", id)
-	// student, err := handler.StudentService.FindStudent(id)
-	// writer.Header().Set("Content-Type", "application/json")
-	// if err != nil {
-	// 	writer.WriteHeader(http.StatusNotFound)
-	// 	return
-	// }
+	user, err := handler.UserService.FindUser(id)
+	writer.Header().Set("Content-Type", "application/json")
+	if err != nil {
+		writer.WriteHeader(http.StatusNotFound)
+		return
+	}
 	writer.WriteHeader(http.StatusOK)
-	// json.NewEncoder(writer).Encode(student)
+	json.NewEncoder(writer).Encode(user)
 }
 
 func (handler *UserHandler) Create(writer http.ResponseWriter, req *http.Request) {
