@@ -10,7 +10,9 @@ import (
 type Flight struct {
 	ID   uuid.UUID `json:"flightID"`
 	Date time.Time `json:"date"`
-	//LocationID     string    `json:"-"`
+	// LocationID1 string    `json:"-"`
+	// LocationID2 string    `json:"-"`
+
 	Departure      Location `json:"departure" gorm:"not null;type:string"`
 	Arrival        Location `json:"arrival" gorm:"not null;type:string"`
 	PassengerCount int      `json:"passengerCount"`
