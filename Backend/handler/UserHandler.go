@@ -37,7 +37,7 @@ func (handler *UserHandler) Create(writer http.ResponseWriter, req *http.Request
 	}
 	err = handler.UserService.Create(&user)
 	if err != nil {
-		println("Error while creating a new user")
+		println("Error while creating a new flight")
 		writer.WriteHeader(http.StatusExpectationFailed)
 		return
 	}

@@ -25,18 +25,22 @@ func initDB() *gorm.DB {
 	database.AutoMigrate(&model.Flight{})
 	database.AutoMigrate(&model.Ticket{})
 
-	//database.Exec("INSERT IGNORE INTO users VALUES ('aec7e123-233d-4a09-a289-75308ea5b7e6', 'David', 'Mijailovic', 'david@mail.com', 'david', 3, )")
-	//database.Exec("INSERT IGNORE INTO flights VALUES ('aec7e123-233d-4a09-a289-75308ea5b7e6', 'David')")
+	//database.Exec("INSERT IGNORE INTO users VALUES ('1', 'David', 'Mijailovic', 'david@mail.com', 'david', 3, '')")
+	//database.Exec("INSERT IGNORE INTO flights VALUES ('aec7e123-233d-4a09-a289-75308ea5b7e6', '2023-03-13T15:30:00Z')")
 	//database.Exec("INSERT IGNORE INTO locations VALUES ('aec7e123-233d-4a09-a289-75308ea5b7e6', 'David')")
 	//database.Exec("INSERT IGNORE INTO tickets VALUES ('aec7e123-233d-4a09-a289-75308ea5b7e6', 'David')")
+
 	return database
 }
 
-func startServer(handler *handler.UserHandler) {
+func startServer(handler *handler.UserHandler, flightHandler *handler.FlightHandler) {
 	router := mux.NewRouter().StrictSlash(true)
 
 	router.HandleFunc("/users/{id}", handler.Get).Methods("GET")
 	router.HandleFunc("/users", handler.Create).Methods("POST")
+
+	router.HandleFunc("/flights", flightHandler.Create).Methods("POST")
+	router.HandleFunc("/flights/{id}", flightHandler.Get).Methods("GET")
 
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./static")))
 	println("Server starting")
@@ -49,9 +53,14 @@ func main() {
 		print("FAILED TO CONNECT TO DB")
 		return
 	}
-	repo := &repo.UserRepository{DatabaseConnection: database}
-	service := &service.UserService{UserRepo: repo}
-	handler := &handler.UserHandler{UserService: service}
 
-	startServer(handler)
+	userRepo := &repo.UserRepository{DatabaseConnection: database}
+	userService := &service.UserService{UserRepo: userRepo}
+	userHandler := &handler.UserHandler{UserService: userService}
+
+	flightRepo := &repo.FlightRepository{DatabaseConnection: database}
+	flightService := &service.FlightService{FlightRepo: flightRepo}
+	flightHandler := &handler.FlightHandler{FlightService: flightService}
+
+	startServer(userHandler, flightHandler)
 }
