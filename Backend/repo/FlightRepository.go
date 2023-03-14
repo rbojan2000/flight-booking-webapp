@@ -1,7 +1,7 @@
 package repo
 
 import (
-	"database-example/model"
+	"flightbooking-app/model"
 
 	"gorm.io/gorm"
 )

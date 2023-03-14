@@ -1,8 +1,8 @@
 package service
 
 import (
-	"database-example/model"
-	"database-example/repo"
+	"flightbooking-app/model"
+	"flightbooking-app/repo"
 	"fmt"
 )
 

@@ -1,29 +1,20 @@
 package repo
 
 import (
-	"database-example/model"
+	"context"
+	"flightbooking-app/model"
 
-	"gorm.io/gorm"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type UserRepository struct {
-	DatabaseConnection *gorm.DB
+	Collection *mongo.Collection
 }
 
-func (repo *UserRepository) FindById(id string) (model.User, error) {
-	user := model.User{}
-	dbResult := repo.DatabaseConnection.First(&user, "id = ?", id)
-	if dbResult != nil {
-		return user, dbResult.Error
+func (repo *UserRepository) Create(user *model.User) error {
+	_, err := repo.Collection.InsertOne(context.Background(), &user)
+	if err != nil {
+		return err
 	}
-	return user, nil
-}
-
-func (repo *UserRepository) CreateUser(user *model.User) error {
-	dbResult := repo.DatabaseConnection.Create(user)
-	if dbResult.Error != nil {
-		return dbResult.Error
-	}
-	println("Rows affected: ", dbResult.RowsAffected)
 	return nil
 }

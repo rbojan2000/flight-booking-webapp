@@ -1,4 +1,4 @@
-module database-example
+module flightbooking-app
 
 go 1.18
 
