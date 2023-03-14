@@ -1,41 +1,40 @@
 package repo
 
 import (
+	"context"
 	"flightbooking-app/model"
-
-	"gorm.io/gorm"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type FlightRepository struct {
-	DatabaseConnection *gorm.DB
+	Collection *mongo.Collection
 }
 
-func (repo *FlightRepository) CreateFlight(flight *model.Flight) error {
-	dResult := *repo.DatabaseConnection.Create(&flight.Departure)
-	if dResult.Error != nil {
-		return dResult.Error
+func (repo *FlightRepository) Create(flight *model.Flight) error {
+	_, err := repo.Collection.InsertOne(context.Background(), &flight)
+	if err != nil {
+		return err
 	}
-
-	aResult := *repo.DatabaseConnection.Create(&flight.Arrival)
-	if aResult.Error != nil {
-		return aResult.Error
-	}
-	//flight.DepartureID = flight.Departure.ID
-	//flight.ArrivalID = flight.Arrival.ID
-
-	dbResult := *repo.DatabaseConnection.Create(flight)
-	if dbResult.Error != nil {
-		return dbResult.Error
-	}
-	println("Rows affected: ", dbResult.RowsAffected)
 	return nil
 }
 
-func (repo *FlightRepository) FindById(id string) (model.Flight, error) {
-	flight := model.Flight{}
-	dbResult := repo.DatabaseConnection.First(&flight, "id = ?", id)
-	if dbResult != nil {
-		return flight, dbResult.Error
+func (repo *FlightRepository) GetById(flightId primitive.ObjectID) (*model.Flight, error) {
+	var f model.Flight
+	filter := bson.M{"_id": flightId}
+	err := repo.Collection.FindOne(context.Background(), filter).Decode(&f)
+	if err != nil {
+		return nil, err
 	}
-	return flight, nil
+	return &f, err
+}
+
+func (repo *FlightRepository) Delete(id primitive.ObjectID) (int64, error) {
+	filter := bson.M{"_id": id}
+	result, err := repo.Collection.DeleteOne(context.Background(), filter)
+	if err != nil {
+		return 0, err
+	}
+	return result.DeletedCount, nil
 }

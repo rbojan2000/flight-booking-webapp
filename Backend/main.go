@@ -24,10 +24,14 @@ func initDB() *mongo.Client {
 	return database
 }
 
-func startServer(handler *handler.UserHandler) {
+func startServer(handler *handler.UserHandler, flightHandler *handler.FlightHandler) {
 	router := mux.NewRouter().StrictSlash(true)
 
 	router.HandleFunc("/registerUser", handler.Create).Methods("POST")
+
+	router.HandleFunc("/flights", flightHandler.Create).Methods("POST")
+	router.HandleFunc("/flights/{id}", flightHandler.GetById).Methods("GET")
+	router.HandleFunc("/flights/{id}", flightHandler.Delete).Methods("DELETE")
 
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
@@ -47,6 +51,9 @@ func main() {
 	userService := &service.UserService{UserRepo: userRepo}
 	userHandler := &handler.UserHandler{UserService: userService}
 
+	flightRepo := &repo.FlightRepository{Collection: client.Database("xws").Collection("flights")}
+	flightService := &service.FlightService{FlightRepo: flightRepo}
+	flightHandler := &handler.FlightHandler{FlightService: flightService}
 
-	startServer(userHandler)
+	startServer(userHandler, flightHandler)
 }

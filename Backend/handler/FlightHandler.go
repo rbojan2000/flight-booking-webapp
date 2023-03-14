@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"flightbooking-app/model"
 	"flightbooking-app/service"
+	"fmt"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"log"
 	"net/http"
 
@@ -32,10 +34,11 @@ func (handler *FlightHandler) Create(writer http.ResponseWriter, req *http.Reque
 	writer.Header().Set("Content-Type", "application/json")
 }
 
-func (handler *FlightHandler) Get(writer http.ResponseWriter, req *http.Request) {
-	id := mux.Vars(req)["id"]
+func (handler *FlightHandler) GetById(writer http.ResponseWriter, req *http.Request) {
+	vars := mux.Vars(req)
+	id, err := primitive.ObjectIDFromHex(vars["id"])
 	log.Printf("Flight with id %s", id)
-	flight, err := handler.FlightService.FindUser(id)
+	flight, err := handler.FlightService.GetById(id)
 	writer.Header().Set("Content-Type", "application/json")
 	if err != nil {
 		writer.WriteHeader(http.StatusNotFound)
@@ -43,4 +46,22 @@ func (handler *FlightHandler) Get(writer http.ResponseWriter, req *http.Request)
 	}
 	writer.WriteHeader(http.StatusOK)
 	json.NewEncoder(writer).Encode(flight)
+}
+
+func (handler *FlightHandler) Delete(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	params := mux.Vars(r)
+	id, _ := primitive.ObjectIDFromHex(params["id"])
+
+	deletedCount, err := handler.FlightService.Delete(id)
+	if err != nil {
+		fmt.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	if deletedCount == 0 {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
 }
