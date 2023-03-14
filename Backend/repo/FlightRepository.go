@@ -2,6 +2,7 @@ package repo
 
 import (
 	"database-example/model"
+
 	"gorm.io/gorm"
 )
 
@@ -19,8 +20,8 @@ func (repo *FlightRepository) CreateFlight(flight *model.Flight) error {
 	if aResult.Error != nil {
 		return aResult.Error
 	}
-	flight.DepartureID = flight.Departure.ID
-	flight.ArrivalID = flight.Arrival.ID
+	//flight.DepartureID = flight.Departure.ID
+	//flight.ArrivalID = flight.Arrival.ID
 
 	dbResult := *repo.DatabaseConnection.Create(flight)
 	if dbResult.Error != nil {

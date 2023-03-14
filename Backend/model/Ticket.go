@@ -1,8 +1,10 @@
 package model
 
+import "go.mongodb.org/mongo-driver/bson/primitive"
+
 type Ticket struct {
-	ID       uint    `json:"id" gorm:"primaryKey;autoIncrement"`
-	FlightId uint    `json:"flightId"`
-	UserId   uint    `json:"userId"`
-	Price    float64 `json:"price"`
+	ID     primitive.ObjectID `bson:"_id,omitempty"`
+	Flight Flight             `bson:"flight,omitempty"`
+	User   User               `bson:"user,omitempty"`
+	Price  float64            `bson:"price,omitempty"`
 }

@@ -1,12 +1,13 @@
 package model
 
+import "go.mongodb.org/mongo-driver/bson/primitive"
+
 type User struct {
-	ID        uint     `json:"id" gorm:"primaryKey;autoIncrement"`
-	Name      string   `json:"name" gorm:"not null;type:string"`
-	Surname   string   `json:"surname" gorm:"not null;type:string"`
-	Email     string   `json:"email" gorm:"not null;type:string"`
-	Password  string   `json:"password" gorm:"not null;type:string"`
-	Type      UserType `json:"type" gorm:"not null;type:int"`
-	Address   Location `json:"address" gorm:"foreignKey:AddressID"`
-	AddressID uint     `json:"addressID" gorm:"index"`
+	ID       primitive.ObjectID `bson:"_id,omitempty"`
+	Name     string             `bson:"name,omitempty" `
+	Surname  string             `bson:"surname,omitempty" `
+	Email    string             `bson:"email,omitempty" `
+	Password string             `bson:"password,omitempty"`
+	Type     UserType           `bson:"type,omitempty"`
+	Address  Location           `bson:"address,omitempty"`
 }

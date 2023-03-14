@@ -2,15 +2,15 @@ package model
 
 import (
 	"time"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type Flight struct {
-	ID             uint      `json:"flightID" gorm:"primaryKey;autoIncrement"`
-	Date           time.Time `json:"date"`
-	DepartureID    uint      `json:"departureID" `
-	ArrivalID      uint      `json:"arrivalID" `
-	Departure      Location  `json:"departure" gorm:"foreignKey:DepartureID"`
-	Arrival        Location  `json:"arrival" gorm:"foreignKey:ArrivalID"`
-	PassengerCount int       `json:"passengerCount"`
-	Capacity       int       `json:"capacity"`
+	ID             primitive.ObjectID `bson:"_id,omitempty"`
+	Date           time.Time          `bson:"date,omitempty"`
+	Departure      Location           `bson:"departure,omitempty"`
+	Arrival        Location           `bson:"arrival,omitempty"`
+	PassengerCount int                `bson:"passengerCount,omitempty"`
+	Capacity       int                `bson:"capacity,omitempty"`
 }
