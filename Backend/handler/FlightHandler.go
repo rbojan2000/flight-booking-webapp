@@ -1,12 +1,13 @@
 package handler
 
 import (
-	"database-example/model"
-	"database-example/service"
 	"encoding/json"
-	"github.com/gorilla/mux"
+	"flightbooking-app/model"
+	"flightbooking-app/service"
 	"log"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 type FlightHandler struct {
