@@ -45,6 +45,14 @@ func (service *FlightService) GetTicketPrice(arrivalCity string, departureCity s
 	return price, err
 }
 
+func (service *FlightService) GetAll() ([]*model.Flight, error) {
+	flights, err := service.FlightRepo.FindAll()
+	if err != nil {
+		return nil, fmt.Errorf(fmt.Sprintf("There are no flights!"))
+	}
+	return flights, nil
+}
+
 func (service *FlightService) GetById(id primitive.ObjectID) (*model.Flight, error) {
 	flight, err := service.FlightRepo.GetById(id)
 	if err != nil {

@@ -28,8 +28,8 @@ func startServer(handler *handler.UserHandler, flightHandler *handler.FlightHand
 	router := mux.NewRouter().StrictSlash(true)
 
 	router.HandleFunc("/registerUser", handler.Create).Methods("POST")
+	router.HandleFunc("/flights/getAll", flightHandler.GetAll).Methods("GET")
 	router.HandleFunc("/flights/getFlightPrice", flightHandler.GetFlightPrice).Methods("POST")
-
 	router.HandleFunc("/flights", flightHandler.Create).Methods("POST")
 	router.HandleFunc("/flights/{id}", flightHandler.GetById).Methods("GET")
 	router.HandleFunc("/flights/{id}", flightHandler.Delete).Methods("DELETE")

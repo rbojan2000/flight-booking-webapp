@@ -17,6 +17,19 @@ type FlightHandler struct {
 	FlightService *service.FlightService
 }
 
+func (handler *FlightHandler) GetAll(writer http.ResponseWriter, req *http.Request) {
+	flights, err := handler.FlightService.GetAll()
+
+	if err != nil {
+		println("Error while getting flights")
+		writer.WriteHeader(http.StatusExpectationFailed)
+		return
+	}
+	writer.WriteHeader(http.StatusCreated)
+	json.NewEncoder(writer).Encode(flights)
+	writer.Header().Set("Content-Type", "application/json")
+}
+
 func (handler *FlightHandler) GetFlightPrice(writer http.ResponseWriter, req *http.Request) {
 	var ticketPriceDTO dto.TicketPriceDTO
 

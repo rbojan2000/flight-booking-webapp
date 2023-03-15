@@ -59,3 +59,23 @@ func (repo *FlightRepository) GetFlightByArrivalDeppartureAndDate(arrivalCity st
 
 	return &flight, err
 }
+
+func (repo *FlightRepository) FindAll() ([]*model.Flight, error) {
+	cursor, err := repo.Collection.Find(context.Background(), bson.M{})
+	if err != nil {
+		return nil, err
+	}
+	var flights []*model.Flight
+	for cursor.Next(context.Background()) {
+		var flight model.Flight
+		if err := cursor.Decode(&flight); err != nil {
+			return nil, err
+		}
+		flights = append(flights, &flight)
+	}
+	if err := cursor.Err(); err != nil {
+		return nil, err
+	}
+
+	return flights, nil
+}
