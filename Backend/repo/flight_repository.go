@@ -3,6 +3,7 @@ package repo
 import (
 	"context"
 	"flightbooking-app/model"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -40,18 +41,21 @@ func (repo *FlightRepository) Delete(id primitive.ObjectID) (int64, error) {
 	}
 	return result.DeletedCount, nil
 }
-func (repo *FlightRepository) GetTicketPrice(flight *model.Flight) error {
-	// filter := bson.M{
-	// 	"departure.city": flight.Departure.City,
-	// 	"arrival.city":   flight.Arrival.City,
-	// 	"date":           flight.Date,
-	// }
 
-	// Dohvati let iz baze
-	// var result model.Flight
-	// if err := repo.collection.FindOne(context.Background(), filter).Decode(&result); err != nil {
-	// 	return 0, err
-	// }
+func (repo *FlightRepository) GetFlightByArrivalDeppartureAndDate(arrivalCity string, departureCity string, date time.Time) (*model.Flight, error) {
 
-	return nil
+	filter := bson.M{
+		"departure.city": departureCity,
+		"arrival.city":   arrivalCity,
+		"date": bson.M{
+			"$gte": date,
+			"$lt":  date.AddDate(0, 0, 1),
+		},
+	}
+
+	var flight model.Flight
+
+	err := repo.Collection.FindOne(context.Background(), filter).Decode(&flight)
+
+	return &flight, err
 }

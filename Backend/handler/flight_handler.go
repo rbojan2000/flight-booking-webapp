@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"flightbooking-app/dto"
 	"flightbooking-app/model"
 	"flightbooking-app/service"
 	"fmt"
@@ -17,28 +18,30 @@ type FlightHandler struct {
 }
 
 func (handler *FlightHandler) GetFlightPrice(writer http.ResponseWriter, req *http.Request) {
-	var flight model.Flight
-	err := json.NewDecoder(req.Body).Decode(&flight)
+	var ticketPriceDTO dto.TicketPriceDTO
+
+	err := json.NewDecoder(req.Body).Decode(&ticketPriceDTO)
 	if err != nil {
 		println("Error while parsing json")
 		writer.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	if err != nil {
-		println("Error while encoding json")
-		writer.WriteHeader(http.StatusInternalServerError)
-		return
-	}
+	arrivalCity := ticketPriceDTO.ArrivalCity
+	departureCity := ticketPriceDTO.DepartureCity
+	date := ticketPriceDTO.Date
+	ticketNum := ticketPriceDTO.TicketNum
 
-	err = handler.FlightService.GetFlightPrice(&flight)
+	price, err := handler.FlightService.GetTicketPrice(arrivalCity, departureCity, date, ticketNum)
+	fmt.Println(price)
+	fmt.Println(err)
+
 	if err != nil {
-		println(err)
 		writer.WriteHeader(http.StatusExpectationFailed)
 		return
 	}
-	writer.WriteHeader(http.StatusCreated)
-	writer.Header().Set("Content-Type", "application/json")
+	writer.WriteHeader(http.StatusOK)
+	json.NewEncoder(writer).Encode(price)
 }
 
 func (handler *FlightHandler) Create(writer http.ResponseWriter, req *http.Request) {

@@ -3,7 +3,9 @@ package service
 import (
 	"flightbooking-app/model"
 	"flightbooking-app/repo"
+	"flightbooking-app/utils"
 	"fmt"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -20,12 +22,27 @@ func (service *FlightService) Create(flight *model.Flight) error {
 	return nil
 }
 
-func (service *FlightService) GetFlightPrice(flight *model.Flight) error {
-	err := service.FlightRepo.GetTicketPrice(flight)
+func (service *FlightService) GetTicketPrice(arrivalCity string, departureCity string, date string, ticketNum int) (float64, error) {
+	dateFormatter := utils.DateFormatter{Format: time.RFC3339}
+	parsedDate, err := dateFormatter.ParseYearMonthDayOfDateString(date)
+
 	if err != nil {
-		return err
+		return -1, fmt.Errorf(fmt.Sprintf("Wrong format date!"))
 	}
-	return nil
+
+	flight, err := service.FlightRepo.GetFlightByArrivalDeppartureAndDate(arrivalCity, departureCity, parsedDate)
+
+	if err != nil {
+		return -1, fmt.Errorf(fmt.Sprintf("There is no flight on relation %s - %s.", arrivalCity, departureCity))
+	}
+
+	if flight.PassengerCount+ticketNum > flight.Capacity {
+		return -1, fmt.Errorf(fmt.Sprintf("You can not buy %d tickets! There is only left %d tikets!", ticketNum, flight.Capacity-flight.PassengerCount))
+	}
+
+	price := float64(ticketNum) * flight.Price
+
+	return price, err
 }
 
 func (service *FlightService) GetById(id primitive.ObjectID) (*model.Flight, error) {
