@@ -30,6 +30,10 @@ func startServer(handler *handler.UserHandler, flightHandler *handler.FlightHand
 	router.HandleFunc("/registerUser", handler.Create).Methods("POST")
 	router.HandleFunc("/flights/getFlightPrice", flightHandler.GetFlightPrice).Methods("POST")
 
+	router.HandleFunc("/flights", flightHandler.Create).Methods("POST")
+	router.HandleFunc("/flights/{id}", flightHandler.GetById).Methods("GET")
+	router.HandleFunc("/flights/{id}", flightHandler.Delete).Methods("DELETE")
+
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
 
