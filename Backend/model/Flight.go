@@ -13,4 +13,5 @@ type Flight struct {
 	Arrival        Location           `bson:"arrival,omitempty"`
 	PassengerCount int                `bson:"passengerCount,omitempty"`
 	Capacity       int                `bson:"capacity,omitempty"`
+	Price          float64            `bson:"price,omitempty"`
 }

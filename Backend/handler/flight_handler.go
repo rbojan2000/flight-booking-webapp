@@ -5,15 +5,34 @@ import (
 	"flightbooking-app/model"
 	"flightbooking-app/service"
 	"fmt"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type FlightHandler struct {
 	FlightService *service.FlightService
+}
+
+func (handler *FlightHandler) GetFlightPrice(writer http.ResponseWriter, req *http.Request) {
+	var flight model.Flight
+	err := json.NewDecoder(req.Body).Decode(&flight)
+	if err != nil {
+		println("Error while parsing json")
+		writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	err = handler.FlightService.GetFlightPrice(&flight)
+	if err != nil {
+		println(err)
+		writer.WriteHeader(http.StatusExpectationFailed)
+		return
+	}
+	writer.WriteHeader(http.StatusCreated)
+	writer.Header().Set("Content-Type", "application/json")
 }
 
 func (handler *FlightHandler) Create(writer http.ResponseWriter, req *http.Request) {

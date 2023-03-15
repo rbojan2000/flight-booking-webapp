@@ -3,8 +3,10 @@ package repo
 import (
 	"context"
 	"flightbooking-app/model"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -37,4 +39,7 @@ func (repo *FlightRepository) Delete(id primitive.ObjectID) (int64, error) {
 		return 0, err
 	}
 	return result.DeletedCount, nil
+}
+func (repo *FlightRepository) GetTicketPrice(flight *model.Flight) error {
+	return nil
 }

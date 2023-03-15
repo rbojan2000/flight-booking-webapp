@@ -6,5 +6,4 @@ type Ticket struct {
 	ID     primitive.ObjectID `bson:"_id,omitempty"`
 	Flight Flight             `bson:"flight,omitempty"`
 	User   User               `bson:"user,omitempty"`
-	Price  float64            `bson:"price,omitempty"`
 }

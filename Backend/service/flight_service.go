@@ -4,6 +4,7 @@ import (
 	"flightbooking-app/model"
 	"flightbooking-app/repo"
 	"fmt"
+
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -13,6 +14,14 @@ type FlightService struct {
 
 func (service *FlightService) Create(flight *model.Flight) error {
 	err := service.FlightRepo.Create(flight)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (service *FlightService) GetFlightPrice(flight *model.Flight) error {
+	err := service.FlightRepo.GetTicketPrice(flight)
 	if err != nil {
 		return err
 	}
