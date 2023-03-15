@@ -20,6 +20,12 @@ func (handler *FlightHandler) GetFlightPrice(writer http.ResponseWriter, req *ht
 		return
 	}
 
+	if err != nil {
+		println("Error while encoding json")
+		writer.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
 	err = handler.FlightService.GetFlightPrice(&flight)
 	if err != nil {
 		println(err)
