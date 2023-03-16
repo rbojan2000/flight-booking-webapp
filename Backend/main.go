@@ -8,11 +8,21 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
+
+func corsMiddleware(next http.Handler) http.Handler {
+	return handlers.CORS(
+		handlers.AllowedOrigins([]string{"http://localhost:3000"}),
+		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}),
+		handlers.AllowedHeaders([]string{"Content-Type"}),
+		handlers.AllowCredentials(),
+	)(next)
+}
 
 func initDB() *mongo.Client {
 	database, err := mongo.Connect(context.TODO(), options.Client().ApplyURI("mongodb://localhost:27017"))
@@ -26,6 +36,7 @@ func initDB() *mongo.Client {
 
 func startServer(handler *handler.UserHandler, flightHandler *handler.FlightHandler, ticketHandler *handler.TicketHandler) {
 	router := mux.NewRouter().StrictSlash(true)
+	router.Use(corsMiddleware)
 
 	router.HandleFunc("/registerUser", handler.Create).Methods("POST")
 

@@ -18,17 +18,15 @@ func (handler *TicketHandler) GetTicketsForUser(writer http.ResponseWriter, req 
 	vars := mux.Vars(req)
 
 	id, err := primitive.ObjectIDFromHex(vars["id"])
-
+	fmt.Println(id)
 	tickets, err := handler.TicketService.GetTicketsForUser(id)
-
-	fmt.Println(tickets)
 
 	if err != nil {
 		println("Error while getting flights")
 		writer.WriteHeader(http.StatusExpectationFailed)
 		return
 	}
-	writer.WriteHeader(http.StatusCreated)
+	writer.WriteHeader(http.StatusOK)
 	json.NewEncoder(writer).Encode(tickets)
 	writer.Header().Set("Content-Type", "application/json")
 }

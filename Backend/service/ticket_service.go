@@ -16,5 +16,6 @@ func (service *TicketService) GetTicketsForUser(id primitive.ObjectID) ([]*model
 	if err != nil {
 		return tickets, err
 	}
+
 	return tickets, err
 }
