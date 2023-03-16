@@ -24,7 +24,9 @@ export default function MyTickets() {
             <div className="ticket-card" key={ticket.ID}>
                 <h2>{ticket.Flight.Departure.City} - {ticket.Flight.Arrival.City}</h2>
                 <p>Price: ${ticket.Flight.Price}</p>
-                <p>Passenger: {ticket.User.Name} {ticket.User.Surname}</p>
+                <p>Date and time: {ticket.Flight.Date}</p>
+
+                {/* <p>Passenger: {ticket.User.Name} {ticket.User.Surname}</p> */}
             </div>
         ))}
     </div>
