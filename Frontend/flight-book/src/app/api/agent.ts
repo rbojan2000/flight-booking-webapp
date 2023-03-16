@@ -77,9 +77,15 @@ const Account = {
 
 }
 
+const Tickets = {
+    
+    ticketsForUser: (id: any) => requests.get('tickets/'+id),
+  };
+
 const agent = {
     Account,
-    Admin
+    Admin,
+    Tickets
 }
 
 export default agent;
