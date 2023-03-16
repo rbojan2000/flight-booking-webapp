@@ -54,3 +54,18 @@ func (repo *UserRepository) FindAll() ([]*model.User, error) {
 
 	return users, nil
 }
+
+func (repo *UserRepository) GetTicketsByUserID(userID primitive.ObjectID) ([]model.Ticket, error) {
+	filter := bson.M{"_id": userID}
+	result := repo.Collection.FindOne(context.Background(), filter)
+	if result.Err() != nil {
+		return nil, result.Err()
+	}
+	var user model.User
+	err := result.Decode(&user)
+	if err != nil {
+		return nil, err
+	}
+
+	return user.Tickets, nil
+}

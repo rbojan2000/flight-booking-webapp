@@ -79,7 +79,7 @@ const Account = {
 
 const Tickets = {
     
-    ticketsForUser: (id: any) => requests.get('tickets/'+id),
+    ticketsForUser: (id: any) => requests.get('userTickets/'+id),
   };
 
 const agent = {

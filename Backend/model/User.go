@@ -10,4 +10,5 @@ type User struct {
 	Password string             `bson:"password,omitempty"`
 	Type     UserType           `bson:"type,omitempty"`
 	Address  Location           `bson:"address,omitempty"`
+	Tickets  []Ticket           `bson:"tickets,omitempty"`
 }

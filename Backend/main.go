@@ -34,11 +34,12 @@ func initDB() *mongo.Client {
 	return database
 }
 
-func startServer(handler *handler.UserHandler, flightHandler *handler.FlightHandler, ticketHandler *handler.TicketHandler) {
+func startServer(handler *handler.UserHandler, flightHandler *handler.FlightHandler) {
 	router := mux.NewRouter().StrictSlash(true)
 	router.Use(corsMiddleware)
 
 	router.HandleFunc("/registerUser", handler.Create).Methods("POST")
+	router.HandleFunc("/userTickets/{id}", handler.GetUserTickets).Methods("GET")
 
 	router.HandleFunc("/flights", flightHandler.Create).Methods("POST")
 	router.HandleFunc("/flights/getAll", flightHandler.GetAll).Methods("GET")
@@ -46,8 +47,6 @@ func startServer(handler *handler.UserHandler, flightHandler *handler.FlightHand
 	router.HandleFunc("/flights/{id}", flightHandler.Delete).Methods("DELETE")
 
 	router.HandleFunc("/flights/getFlightPrice", flightHandler.GetFlightPrice).Methods("POST")
-
-	router.HandleFunc("/tickets/{id}", ticketHandler.GetTicketsForUser).Methods("GET")
 
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
@@ -68,15 +67,12 @@ func main() {
 
 	userRepo := &repo.UserRepository{Collection: client.Database("xws").Collection("users")}
 	flightRepo := &repo.FlightRepository{Collection: client.Database("xws").Collection("flights")}
-	ticketRepo := &repo.TicketRepository{Collection: client.Database("xws").Collection("tickets")}
 
 	userService := &service.UserService{UserRepo: userRepo}
 	flightService := &service.FlightService{FlightRepo: flightRepo}
-	ticketService := &service.TicketService{TicketRepo: ticketRepo}
 
 	userHandler := &handler.UserHandler{UserService: userService}
 	flightHandler := &handler.FlightHandler{FlightService: flightService}
-	ticketHandler := &handler.TicketHandler{TicketService: ticketService}
 
-	startServer(userHandler, flightHandler, ticketHandler)
+	startServer(userHandler, flightHandler)
 }
