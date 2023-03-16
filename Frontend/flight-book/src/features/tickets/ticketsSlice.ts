@@ -1,8 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import agent from "../../app/api/agent";
+import { Ticket } from "../../app/models/ticket";
 
 interface TicketsState {
-  tickets: any[];
+  tickets: Ticket[];
 }
 
 const initialState: TicketsState = {
