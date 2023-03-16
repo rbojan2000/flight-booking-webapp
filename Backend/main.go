@@ -1,57 +1,81 @@
 package main
 
 import (
-	"database-example/handler"
-	"database-example/model"
-	"database-example/repo"
-	"database-example/service"
+	"context"
+	"flightbooking-app/handler"
+	"flightbooking-app/repo"
+	"flightbooking-app/service"
 	"log"
 	"net/http"
 
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
-func initDB() *gorm.DB {
-	connectionStr := "root:test@tcp(localhost:3306)/flight_booking?charset=utf8mb4&parseTime=True&loc=Local"
-	database, err := gorm.Open(mysql.Open(connectionStr), &gorm.Config{})
+func corsMiddleware(next http.Handler) http.Handler {
+	return handlers.CORS(
+		handlers.AllowedOrigins([]string{"http://localhost:3000"}),
+		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}),
+		handlers.AllowedHeaders([]string{"Content-Type"}),
+		handlers.AllowCredentials(),
+	)(next)
+}
+
+func initDB() *mongo.Client {
+	database, err := mongo.Connect(context.TODO(), options.Client().ApplyURI("mongodb://localhost:27017"))
 	if err != nil {
 		print(err)
 		return nil
 	}
-	database.AutoMigrate(&model.Location{})
-	database.AutoMigrate(&model.User{})
-	database.AutoMigrate(&model.Flight{})
-	database.AutoMigrate(&model.Ticket{})
 
-	//database.Exec("INSERT IGNORE INTO users VALUES ('aec7e123-233d-4a09-a289-75308ea5b7e6', 'David', 'Mijailovic', 'david@mail.com', 'david', 3, )")
-	//database.Exec("INSERT IGNORE INTO flights VALUES ('aec7e123-233d-4a09-a289-75308ea5b7e6', 'David')")
-	//database.Exec("INSERT IGNORE INTO locations VALUES ('aec7e123-233d-4a09-a289-75308ea5b7e6', 'David')")
-	//database.Exec("INSERT IGNORE INTO tickets VALUES ('aec7e123-233d-4a09-a289-75308ea5b7e6', 'David')")
 	return database
 }
 
-func startServer(handler *handler.UserHandler) {
+func startServer(handler *handler.UserHandler, flightHandler *handler.FlightHandler, ticketHandler *handler.TicketHandler) {
 	router := mux.NewRouter().StrictSlash(true)
+	router.Use(corsMiddleware)
 
-	router.HandleFunc("/users/{id}", handler.Get).Methods("GET")
-	router.HandleFunc("/users", handler.Create).Methods("POST")
+	router.HandleFunc("/registerUser", handler.Create).Methods("POST")
 
-	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./static")))
-	println("Server starting")
+	router.HandleFunc("/flights/getAll", flightHandler.GetAll).Methods("GET")
+	router.HandleFunc("/flights/getFlightPrice", flightHandler.GetFlightPrice).Methods("POST")
+	router.HandleFunc("/flights", flightHandler.Create).Methods("POST")
+	router.HandleFunc("/flights/{id}", flightHandler.GetById).Methods("GET")
+	router.HandleFunc("/flights/{id}", flightHandler.Delete).Methods("DELETE")
+
+	router.HandleFunc("/tickets/{id}", ticketHandler.GetTicketsForUser).Methods("GET")
+
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
 
 func main() {
-	database := initDB()
-	if database == nil {
+	client := initDB()
+
+	print("Server started")
+
+	if client == nil {
 		print("FAILED TO CONNECT TO DB")
 		return
 	}
-	repo := &repo.UserRepository{DatabaseConnection: database}
-	service := &service.UserService{UserRepo: repo}
-	handler := &handler.UserHandler{UserService: service}
 
-	startServer(handler)
+	if err := client.Ping(context.TODO(), readpref.Primary()); err != nil {
+		panic(err)
+	}
+
+	userRepo := &repo.UserRepository{Collection: client.Database("xws").Collection("users")}
+	flightRepo := &repo.FlightRepository{Collection: client.Database("xws").Collection("flights")}
+	ticketRepo := &repo.TicketRepository{Collection: client.Database("xws").Collection("tickets")}
+
+	userService := &service.UserService{UserRepo: userRepo}
+	flightService := &service.FlightService{FlightRepo: flightRepo}
+	ticketService := &service.TicketService{TicketRepo: ticketRepo}
+
+	userHandler := &handler.UserHandler{UserService: userService}
+	flightHandler := &handler.FlightHandler{FlightService: flightService}
+	ticketHandler := &handler.TicketHandler{TicketService: ticketService}
+
+	startServer(userHandler, flightHandler, ticketHandler)
 }

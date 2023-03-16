@@ -3,23 +3,15 @@ package model
 import (
 	"time"
 
-	"github.com/google/uuid"
-	"gorm.io/gorm"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type Flight struct {
-	ID   uuid.UUID `json:"flightID"`
-	Date time.Time `json:"date"`
-	// LocationID1 string    `json:"-"`
-	// LocationID2 string    `json:"-"`
-
-	Departure      Location `json:"departure" gorm:"not null;type:string"`
-	Arrival        Location `json:"arrival" gorm:"not null;type:string"`
-	PassengerCount int      `json:"passengerCount"`
-	Capacity       int      `json:"capacity"`
-}
-
-func (flight *Flight) BeforeCreate(scope *gorm.DB) error {
-	flight.ID = uuid.New()
-	return nil
+	ID             primitive.ObjectID `bson:"_id,omitempty"`
+	Date           time.Time          `bson:"date,omitempty"`
+	Departure      Location           `bson:"departure,omitempty"`
+	Arrival        Location           `bson:"arrival,omitempty"`
+	PassengerCount int                `bson:"passengerCount,omitempty"`
+	Capacity       int                `bson:"capacity,omitempty"`
+	Price          float64            `bson:"price,omitempty"`
 }

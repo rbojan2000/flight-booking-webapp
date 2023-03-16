@@ -1,30 +1,14 @@
 package handler
 
 import (
-	"database-example/model"
-	"database-example/service"
 	"encoding/json"
-	"log"
+	"flightbooking-app/model"
+	"flightbooking-app/service"
 	"net/http"
-
-	"github.com/gorilla/mux"
 )
 
 type UserHandler struct {
 	UserService *service.UserService
-}
-
-func (handler *UserHandler) Get(writer http.ResponseWriter, req *http.Request) {
-	id := mux.Vars(req)["id"]
-	log.Printf("User sa id-em %s", id)
-	user, err := handler.UserService.FindUser(id)
-	writer.Header().Set("Content-Type", "application/json")
-	if err != nil {
-		writer.WriteHeader(http.StatusNotFound)
-		return
-	}
-	writer.WriteHeader(http.StatusOK)
-	json.NewEncoder(writer).Encode(user)
 }
 
 func (handler *UserHandler) Create(writer http.ResponseWriter, req *http.Request) {
@@ -37,7 +21,7 @@ func (handler *UserHandler) Create(writer http.ResponseWriter, req *http.Request
 	}
 	err = handler.UserService.Create(&user)
 	if err != nil {
-		println("Error while creating a new user")
+		println(err)
 		writer.WriteHeader(http.StatusExpectationFailed)
 		return
 	}
