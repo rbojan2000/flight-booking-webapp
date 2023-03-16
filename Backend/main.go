@@ -40,11 +40,12 @@ func startServer(handler *handler.UserHandler, flightHandler *handler.FlightHand
 
 	router.HandleFunc("/registerUser", handler.Create).Methods("POST")
 
-	router.HandleFunc("/flights/getAll", flightHandler.GetAll).Methods("GET")
-	router.HandleFunc("/flights/getFlightPrice", flightHandler.GetFlightPrice).Methods("POST")
 	router.HandleFunc("/flights", flightHandler.Create).Methods("POST")
+	router.HandleFunc("/flights/getAll", flightHandler.GetAll).Methods("GET")
 	router.HandleFunc("/flights/{id}", flightHandler.GetById).Methods("GET")
 	router.HandleFunc("/flights/{id}", flightHandler.Delete).Methods("DELETE")
+
+	router.HandleFunc("/flights/getFlightPrice", flightHandler.GetFlightPrice).Methods("POST")
 
 	router.HandleFunc("/tickets/{id}", ticketHandler.GetTicketsForUser).Methods("GET")
 
@@ -54,7 +55,7 @@ func startServer(handler *handler.UserHandler, flightHandler *handler.FlightHand
 func main() {
 	client := initDB()
 
-	print("Server started")
+	print("Server started\n")
 
 	if client == nil {
 		print("FAILED TO CONNECT TO DB")

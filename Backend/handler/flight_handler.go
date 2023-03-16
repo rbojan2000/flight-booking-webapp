@@ -67,7 +67,7 @@ func (handler *FlightHandler) Create(writer http.ResponseWriter, req *http.Reque
 	}
 	err = handler.FlightService.Create(&flight)
 	if err != nil {
-		println("Error while creating a new flight")
+		fmt.Println("Error:", err)
 		writer.WriteHeader(http.StatusExpectationFailed)
 		return
 	}

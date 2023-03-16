@@ -2,6 +2,7 @@ package repo
 
 import (
 	"context"
+	"errors"
 	"flightbooking-app/model"
 	"time"
 
@@ -16,7 +17,16 @@ type FlightRepository struct {
 }
 
 func (repo *FlightRepository) Create(flight *model.Flight) error {
-	_, err := repo.Collection.InsertOne(context.Background(), &flight)
+	filter := bson.M{"departure": flight.Departure, "arrival": flight.Arrival, "date": flight.Date}
+	count, err := repo.Collection.CountDocuments(context.Background(), &filter)
+	if err != nil {
+		return err
+	}
+	if count > 0 {
+		return errors.New("Flight with the same Departure, Arrival and Date already exists")
+	}
+
+	_, err = repo.Collection.InsertOne(context.Background(), &flight)
 	if err != nil {
 		return err
 	}
