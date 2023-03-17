@@ -77,6 +77,7 @@ const Account = {
 
 }
 
+<<<<<<< Updated upstream
 const Tickets = {
     
     ticketsForUser: (id: any) => requests.get('userTickets/'+id),
@@ -86,6 +87,11 @@ const agent = {
     Account,
     Admin,
     Tickets
+=======
+const agent = {
+    Account,
+    Admin
+>>>>>>> Stashed changes
 }
 
 export default agent;

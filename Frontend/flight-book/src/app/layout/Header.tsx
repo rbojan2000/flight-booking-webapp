@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+<<<<<<< Updated upstream
 import { AppBar,  Box, List, ListItem, Toolbar, Typography } from "@mui/material";
 import { NavLink } from "react-router-dom";
 
@@ -7,6 +8,13 @@ const midLinks = [
     {title: 'buy ticket', path: '/buyTicket'},
     {title: 'my tickets', path: '/myTickets'}
 
+=======
+import { AppBar,  Box, List, ListItem, Switch, Toolbar, Typography } from "@mui/material";
+import { NavLink } from "react-router-dom";
+
+const midLinks = [
+    {title: 'flights', path: '/flights'}
+>>>>>>> Stashed changes
 ]
 
 const rightLinks = [
