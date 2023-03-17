@@ -4,6 +4,8 @@ import (
 	"context"
 	"flightbooking-app/model"
 	"flightbooking-app/repo"
+	"flightbooking-app/utils"
+	"os"
 	"testing"
 	"time"
 
@@ -16,7 +18,8 @@ import (
 var flightRepoMock *repo.FlightRepository
 
 func setupFlightRepo() {
-	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI("mongodb://localhost:27017"))
+	utils.LoadEnv()
+	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(os.Getenv("MONGO_CONNECTION_PORT")))
 	if err != nil {
 		panic(err)
 	}

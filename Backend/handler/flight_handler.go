@@ -2,8 +2,8 @@ package handler
 
 import (
 	"encoding/json"
-	"flightbooking-app/dto"
 	"flightbooking-app/model"
+	"flightbooking-app/model/dto"
 	"flightbooking-app/service"
 	"fmt"
 	"log"

@@ -1,11 +1,14 @@
 package service
 
 import (
+	"context"
 	"flightbooking-app/model"
 	"flightbooking-app/repo"
 	"fmt"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"golang.org/x/crypto/bcrypt"
+	"gopkg.in/mgo.v2/bson"
 )
 
 type UserService struct {
@@ -26,4 +29,20 @@ func (service *UserService) GetTicketsByUserID(id primitive.ObjectID) ([]model.T
 		return nil, fmt.Errorf(fmt.Sprintf("No tickets for user"))
 	}
 	return tickets, nil
+}
+func (service *UserService) Login(user *model.User) (*model.User, error) {
+	filter := bson.M{"email": user.Email}
+
+	var result model.User
+	err := service.UserRepo.Collection.FindOne(context.Background(), filter).Decode(&result)
+	if err != nil {
+		return nil, err
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(result.Password), []byte(user.Password))
+	if err != nil {
+		return nil, err
+	}
+
+	return &result, nil
 }

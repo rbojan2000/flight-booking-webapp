@@ -5,8 +5,11 @@ import Register from "../../features/account/Register";
 
 import App from "../layout/App";
 import RequireAuth from "./RequireAuth";
+<<<<<<< Updated upstream
 import BuyTicket from "../../features/tickets/BuyTicket";
 import MyTickets from "../../features/tickets/MyTickets";
+=======
+>>>>>>> Stashed changes
 
 export const router = createBrowserRouter([
     {
@@ -24,9 +27,12 @@ export const router = createBrowserRouter([
             {path: 'flights', element: <FlightsPage />},  
             {path: 'login', element: <Login />},
             {path: 'register', element: <Register />},
+<<<<<<< Updated upstream
             {path: 'buyTicket', element: <BuyTicket/>},
             {path: 'myTickets', element: <MyTickets/>},
 
+=======
+>>>>>>> Stashed changes
             {path: '*', element: <Navigate replace to='/not-found' />}
         ]
     }
