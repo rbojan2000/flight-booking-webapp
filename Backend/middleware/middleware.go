@@ -14,7 +14,7 @@ type contextKey string
 
 const userIDKey contextKey = "userID"
 
-func RequireAuth(fn func(w http.ResponseWriter, r *http.Request)) http.HandlerFunc {
+func RequireAuth(userType string, fn func(w http.ResponseWriter, r *http.Request)) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		tokenString := r.Header.Get("Authorization")
 		if tokenString == "" {
@@ -39,6 +39,13 @@ func RequireAuth(fn func(w http.ResponseWriter, r *http.Request)) http.HandlerFu
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
+
+		userTypeClaim, ok := claims["userType"].(string)
+		if !ok || userTypeClaim != userType {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+
 		userID, ok := claims["userID"].(string)
 		if !ok {
 			w.WriteHeader(http.StatusUnauthorized)
@@ -49,6 +56,7 @@ func RequireAuth(fn func(w http.ResponseWriter, r *http.Request)) http.HandlerFu
 		fn(w, r.WithContext(ctx))
 	}
 }
+
 
 func CorsMiddleware(next http.Handler) http.Handler {
 	return handlers.CORS(
