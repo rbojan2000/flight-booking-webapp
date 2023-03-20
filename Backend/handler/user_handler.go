@@ -55,12 +55,9 @@ func (handler *UserHandler) Login(writer http.ResponseWriter, req *http.Request)
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"userID": usr.ID.Hex(),
-		"exp":    time.Now().Add(time.Minute * 30).Unix(),
-<<<<<<< Updated upstream
+		"userID":   usr.ID.Hex(),
+		"exp":      time.Now().Add(time.Minute * 30).Unix(),
 		"userType": usr.Type,
-=======
->>>>>>> Stashed changes
 	})
 
 	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET_KEY")))
@@ -69,7 +66,7 @@ func (handler *UserHandler) Login(writer http.ResponseWriter, req *http.Request)
 		return
 	}
 
-	writer.Header().Set("Authorization", "Bearer " + tokenString)
+	writer.Header().Set("Authorization", "Bearer "+tokenString)
 	writer.WriteHeader(http.StatusOK)
 }
 

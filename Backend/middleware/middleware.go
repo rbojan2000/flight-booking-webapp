@@ -14,11 +14,7 @@ type contextKey string
 
 const userIDKey contextKey = "userID"
 
-<<<<<<< Updated upstream
 func RequireAuth(userType string, fn func(w http.ResponseWriter, r *http.Request)) http.HandlerFunc {
-=======
-func RequireAuth(fn func(w http.ResponseWriter, r *http.Request)) http.HandlerFunc {
->>>>>>> Stashed changes
 	return func(w http.ResponseWriter, r *http.Request) {
 		tokenString := r.Header.Get("Authorization")
 		if tokenString == "" {
@@ -43,7 +39,6 @@ func RequireAuth(fn func(w http.ResponseWriter, r *http.Request)) http.HandlerFu
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
-<<<<<<< Updated upstream
 
 		userTypeClaim, ok := claims["userType"].(string)
 		if !ok || userTypeClaim != userType {
@@ -51,8 +46,6 @@ func RequireAuth(fn func(w http.ResponseWriter, r *http.Request)) http.HandlerFu
 			return
 		}
 
-=======
->>>>>>> Stashed changes
 		userID, ok := claims["userID"].(string)
 		if !ok {
 			w.WriteHeader(http.StatusUnauthorized)
@@ -64,10 +57,6 @@ func RequireAuth(fn func(w http.ResponseWriter, r *http.Request)) http.HandlerFu
 	}
 }
 
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
 func CorsMiddleware(next http.Handler) http.Handler {
 	return handlers.CORS(
 		handlers.AllowedOrigins([]string{os.Getenv("CLIENT_PORT")}),

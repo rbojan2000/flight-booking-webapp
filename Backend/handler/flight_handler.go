@@ -2,10 +2,6 @@ package handler
 
 import (
 	"encoding/json"
-<<<<<<< Updated upstream
-	"flightbooking-app/model"
-=======
->>>>>>> Stashed changes
 	"flightbooking-app/model/dto"
 	"flightbooking-app/service"
 	"fmt"
@@ -59,12 +55,7 @@ func (handler *FlightHandler) GetFlightPrice(writer http.ResponseWriter, req *ht
 	writer.WriteHeader(http.StatusOK)
 	json.NewEncoder(writer).Encode(price)
 }
-<<<<<<< Updated upstream
 
-func (handler *FlightHandler) Create(writer http.ResponseWriter, req *http.Request) {
-	var flight model.Flight
-	err := json.NewDecoder(req.Body).Decode(&flight)
-=======
 func enableCors(w *http.ResponseWriter) {
 	(*w).Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
 }
@@ -73,17 +64,9 @@ func (handler *FlightHandler) Create(writer http.ResponseWriter, req *http.Reque
 	enableCors(&writer)
 	var flightDto dto.FlightDTO
 	err := json.NewDecoder(req.Body).Decode(&flightDto)
->>>>>>> Stashed changes
-	if err != nil {
-		println("Error while parsing json")
-		writer.WriteHeader(http.StatusExpectationFailed)
-		return
-	}
-<<<<<<< Updated upstream
-	err = handler.FlightService.Create(&flight)
-=======
+
 	err = handler.FlightService.Create(&flightDto)
->>>>>>> Stashed changes
+
 	if err != nil {
 		fmt.Println("Error:", err)
 		writer.WriteHeader(http.StatusExpectationFailed)
