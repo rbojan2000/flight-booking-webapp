@@ -7,10 +7,16 @@ import (
 	"flightbooking-app/server"
 	"flightbooking-app/service"
 	"flightbooking-app/utils"
+<<<<<<< Updated upstream
 
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
+=======
+	"go.mongodb.org/mongo-driver/mongo/readpref"
+)
+
+>>>>>>> Stashed changes
 func main() {
 	utils.LoadEnv()
 	client := server.InitDB()
@@ -23,7 +29,10 @@ func main() {
 		panic(err)
 	}
 
+<<<<<<< Updated upstream
 	
+=======
+>>>>>>> Stashed changes
 	flightRepo := &repo.FlightRepository{Collection: client.Database("xws").Collection("flights")}
 	flightService := &service.FlightService{FlightRepo: flightRepo}
 	flightHandler := &handler.FlightHandler{FlightService: flightService}
@@ -31,6 +40,9 @@ func main() {
 	userService := &service.UserService{UserRepo: userRepo}
 	userHandler := &handler.UserHandler{UserService: userService}
 
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 	server.StartServer(userHandler, flightHandler)
 }

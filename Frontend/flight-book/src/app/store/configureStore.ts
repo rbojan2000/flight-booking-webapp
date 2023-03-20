@@ -1,21 +1,15 @@
-import { TypedUseSelectorHook, useSelector } from 'react-redux/es/exports';
-import { useDispatch } from 'react-redux/es/hooks/useDispatch';
 import { configureStore } from "@reduxjs/toolkit";
-import { accountSlice } from '../../features/account/accountSlice';
-<<<<<<< Updated upstream
-import { ticketSlice } from '../../features/tickets/ticketsSlice';
-=======
->>>>>>> Stashed changes
+import { useDispatch, TypedUseSelectorHook, useSelector } from "react-redux";
+import { accountSlice } from "../../features/account/accountSlice";
+import { flightSlice } from "../../features/flights/flightsSlice";
+import { ticketSlice } from "../../features/tickets/ticketsSlice";
 
 
 export const store = configureStore({
     reducer: {
-<<<<<<< Updated upstream
+        ticketsSlice: ticketSlice.reducer,
         account: accountSlice.reducer,
-        ticketsSlice: ticketSlice.reducer
-=======
-        account: accountSlice.reducer
->>>>>>> Stashed changes
+        flightSlice: flightSlice.reducer,
     }
 })
 
