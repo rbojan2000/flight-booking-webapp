@@ -6,11 +6,8 @@ import Header from "./Header";
 import 'react-toastify/dist/ReactToastify.css';
 import LoadingComponent from "./LoadingComponent";
 import { useAppDispatch } from "../store/configureStore";
-<<<<<<< Updated upstream
-import { CssBaseline, Container } from "@mui/material";
-=======
-import { CssBaseline, Container, createTheme } from "@mui/material";
->>>>>>> Stashed changes
+import { CssBaseline } from "@mui/material";
+import { Container } from "@mui/system";
 
 
 function App() {

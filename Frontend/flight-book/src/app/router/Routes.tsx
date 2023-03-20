@@ -1,15 +1,11 @@
+import { Login } from "@mui/icons-material";
 import { createBrowserRouter, Navigate } from "react-router-dom";
-import FlightsPage from "../../features/flightsPage/FlightsPage";
-import Login from "../../features/account/Login";
 import Register from "../../features/account/Register";
-
-import App from "../layout/App";
-import RequireAuth from "./RequireAuth";
-<<<<<<< Updated upstream
+import FlightsPage from "../../features/flightsPage/FlightsPage";
 import BuyTicket from "../../features/tickets/BuyTicket";
 import MyTickets from "../../features/tickets/MyTickets";
-=======
->>>>>>> Stashed changes
+import App from "../layout/App";
+import RequireAuth from "./RequireAuth";
 
 export const router = createBrowserRouter([
     {
@@ -27,12 +23,9 @@ export const router = createBrowserRouter([
             {path: 'flights', element: <FlightsPage />},  
             {path: 'login', element: <Login />},
             {path: 'register', element: <Register />},
-<<<<<<< Updated upstream
             {path: 'buyTicket', element: <BuyTicket/>},
             {path: 'myTickets', element: <MyTickets/>},
-
-=======
->>>>>>> Stashed changes
+            
             {path: '*', element: <Navigate replace to='/not-found' />}
         ]
     }

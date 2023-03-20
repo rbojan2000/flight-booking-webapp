@@ -57,7 +57,10 @@ func (handler *UserHandler) Login(writer http.ResponseWriter, req *http.Request)
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"userID": usr.ID.Hex(),
 		"exp":    time.Now().Add(time.Minute * 30).Unix(),
+<<<<<<< Updated upstream
 		"userType": usr.Type,
+=======
+>>>>>>> Stashed changes
 	})
 
 	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET_KEY")))
