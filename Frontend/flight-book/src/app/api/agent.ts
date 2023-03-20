@@ -1,5 +1,5 @@
-import { PaginatedResponse } from "./../models/Pagination";
 import axios, { AxiosError, AxiosResponse } from "axios";
+import { PaginatedResponse } from "./../models/Pagination";
 import { toast } from "react-toastify";
 import { router } from "../router/Routes";
 

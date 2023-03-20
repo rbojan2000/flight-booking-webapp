@@ -11,12 +11,7 @@ type Flight struct {
 	Date           time.Time          `bson:"date,omitempty"`
 	Departure      Location           `bson:"departure,omitempty"`
 	Arrival        Location           `bson:"arrival,omitempty"`
-<<<<<<< Updated upstream
-	PassengerCount int                `bson:"passengerCount,omitempty"`
-	Capacity       int                `bson:"capacity,omitempty"`
-=======
 	PassengerCount int64              `bson:"passengerCount,omitempty"`
 	Capacity       int64              `bson:"capacity,omitempty"`
->>>>>>> Stashed changes
 	Price          float64            `bson:"price,omitempty"`
 }
