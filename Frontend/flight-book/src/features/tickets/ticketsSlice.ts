@@ -4,6 +4,7 @@ import agent from "../../app/api/agent";
 import { Ticket } from "../../app/models/ticket";
 
 import { Flight } from "../../app/models/flight";
+import { toast } from "react-toastify";
 
 interface TicketsState {
   tickets: Ticket[];
@@ -50,9 +51,8 @@ export const createTicket = createAsyncThunk<any, FieldValues>(
   async (data, thunkAPI) => {
     try {
       var id = "6413607fc2fac0c7689d944b";
-      window.alert(JSON.stringify(data))
       let buyTicketDTO = {flightID: data.selectedFlightInfo.ID, userID: id, numberOfTickets:data.numberOfTickets}   
-      const response = await agent.Tickets.create(buyTicketDTO);
+      await agent.Tickets.create(buyTicketDTO);
    
       return true;
     } catch (error: any) {
@@ -72,5 +72,14 @@ export const ticketSlice = createSlice({
      builder.addCase(fetchFlights.fulfilled, (state, { payload }) => {
       state.flights = payload;
     });
+
+    builder.addCase(createTicket.rejected, (state, { payload }) => {
+      const errorMessage = (payload as { error: string }).error;
+      toast.error(errorMessage)
+    });
+    builder.addCase(createTicket.fulfilled, (state, { payload }) => {
+      toast.success("Congrats! You bought tickets.")
+    });
+    
   }
 });

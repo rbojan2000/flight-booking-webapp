@@ -61,6 +61,7 @@ export default function BuyTicket() {
   }, []);
 
   return (
+    
     <Container>
       <h1>Buy Ticket page</h1>
       <Table className="table">
@@ -106,69 +107,34 @@ export default function BuyTicket() {
         </Table>
 
         {/* Dialog box to select the number of tickets */}
-      <Dialog
-        open={openDialog}
-        onClose={handleDialogClose}
-        PaperProps={{
-        className: "ticket-dialog",
-        }}
-      >
-
-        <DialogTitle className="ticket-dialog-title">Select Number of Tickets</DialogTitle>
-        <DialogContent className="ticket-dialog-content">
-          <Typography>
-          <b><FaCalendarAlt /> Date:</b>{" "}
-            {new Date(
-              flights.find((flight) => flight.ID === selectedFlight)?.Date ?? ""
-            ).toLocaleString()}
-            <br />
-            <b> <FaPlaneDeparture/>Departure:</b>{" "}
-            {flights.find((flight) => flight.ID === selectedFlight)?.Departure.City},{" "}
-            {flights.find((flight) => flight.ID === selectedFlight)?.Departure.Country}
-            <br />
-            <b> <FaPlaneArrival/> Arrival:</b>{" "}
-            {flights.find((flight) => flight.ID === selectedFlight)?.Arrival.City},{" "}
-            {flights.find((flight) => flight.ID === selectedFlight)?.Arrival.Country}
-            <br />
-            <b> <GiPriceTag/> Price per ticket:</b>{" "}
-            {flights.find((flight) => flight.ID === selectedFlight)?.Price} $
-          </Typography>
-          <br />
-          <TextField
-            label="Number of Tickets"
-            type="number"
-            value={numberOfTickets}
-            onChange={(event) => setNumberOfTickets(Number(event.target.value))}
-            
-            InputProps={{ inputProps: { 
-              min: 1,
-              max: 10
-            } }}
-            fullWidth
-          />
-          <br />
-          <Typography variant="h6" className="ticket-dialog-price">
-            {selectedFlight &&
-            flights.find(
-              (flight) =>
-                flight.ID === selectedFlight && flight.Price !== undefined
-            ) ? (
-              flights.find((flight) => flight.ID === selectedFlight)?.Price! *
-              numberOfTickets
-            ) : (
-              0
-            )}{" "}
-            $
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDialogClose}>Cancel</Button>
-          <Button onClick={handleDialogSubmit} color="primary">
-            Buy
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-  </Container>
+        <Dialog
+          open={openDialog}
+          onClose={handleDialogClose}
+          sx={{
+            "& .MuiDialog-paper": {
+              width: "50%",
+              height: "60%",
+            },
+          }}
+        >
+          <div className="my-dialog-container">
+            <div className="my-dialog-content">
+              <h2>Select Number of Tickets</h2>
+              <p><strong><FaCalendarAlt /> Date:</strong> {new Date(flights.find((flight) => flight.ID === selectedFlight)?.Date ?? "").toLocaleString()}</p>
+              <p><strong><FaPlaneDeparture/> Departure:</strong> {flights.find((flight) => flight.ID === selectedFlight)?.Departure.City}, {flights.find((flight) => flight.ID === selectedFlight)?.Departure.Country}</p>
+              <p><strong><FaPlaneArrival/> Arrival:</strong> {flights.find((flight) => flight.ID === selectedFlight)?.Arrival.City}, {flights.find((flight) => flight.ID === selectedFlight)?.Arrival.Country}</p>
+              <p><strong><GiPriceTag/> Price per ticket:</strong> {flights.find((flight) => flight.ID === selectedFlight)?.Price} $</p>
+              <label htmlFor="numberOfTickets">Number of Tickets:</label>
+              <input type="number" id="numberOfTickets" name="numberOfTickets" min="1" max="10" value={numberOfTickets} onChange={(event) => setNumberOfTickets(Number(event.target.value))} />
+              <p className="ticket-dialog-price">{selectedFlight && flights.find((flight) => flight.ID === selectedFlight && flight.Price !== undefined) ? flights.find((flight) => flight.ID === selectedFlight)?.Price! * numberOfTickets : 0} $</p>
+            </div>
+            <div className="my-dialog-buttons">
+              <button onClick={handleDialogClose}>Cancel</button>
+              <button onClick={handleDialogSubmit}>Buy</button>
+            </div>
+          </div>
+        </Dialog>
+      </Container>
+      
     )
 }

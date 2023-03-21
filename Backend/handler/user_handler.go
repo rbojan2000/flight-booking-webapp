@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"flightbooking-app/model"
 	"flightbooking-app/service"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -91,9 +92,14 @@ func (handler *UserHandler) BuyTicket(writer http.ResponseWriter, req *http.Requ
 	err := handler.UserService.AssignTicketToUser(objectUserID, objectFlightID, numOfTickets)
 
 	if err != nil {
+		fmt.Print(err.Error())
+		writer.WriteHeader(http.StatusConflict)
+		writer.Write([]byte(err.Error())) // Write the error message to the response body
 
+		return
 	}
 
+	writer.WriteHeader(http.StatusCreated)
 }
 
 func (handler *UserHandler) GetUserTickets(writer http.ResponseWriter, req *http.Request) {
