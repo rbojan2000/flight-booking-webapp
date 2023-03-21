@@ -14,7 +14,6 @@ export default function MyTickets() {
   const dispatch: AppDispatch = useDispatch();
   const tickets = useSelector((state: RootState) => state.ticketsSlice.tickets);
 
-
     useEffect(() => {
         dispatch(fetchTickets());
     }, []);

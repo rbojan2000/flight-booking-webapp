@@ -12,7 +12,8 @@ import (
 )
 
 type UserService struct {
-	UserRepo *repo.UserRepository
+	UserRepo   *repo.UserRepository
+	FlightRepo *repo.FlightRepository
 }
 
 func (service *UserService) Create(user *model.User) error {
@@ -30,6 +31,36 @@ func (service *UserService) GetTicketsByUserID(id primitive.ObjectID) ([]model.T
 	}
 	return tickets, nil
 }
+
+func (service *UserService) AssignTicketToUser(userID primitive.ObjectID, flightID primitive.ObjectID, numberOfTickets int) error {
+
+	flight, err := service.FlightRepo.GetById(flightID)
+
+	if err != nil {
+		return fmt.Errorf(fmt.Sprintf("There is no flight on relation %s - %s.", flight.Arrival.City, flight.Departure.City))
+	}
+
+	if flight.PassengerCount+int64(numberOfTickets) > flight.Capacity {
+		return fmt.Errorf(fmt.Sprintf("You can not buy %d tickets! There is only left %d tikets!", numberOfTickets, flight.Capacity-flight.PassengerCount))
+
+	}
+
+	_, err = service.FlightRepo.Collection.UpdateByID(context.Background(), flightID, bson.M{"$set": bson.M{"passengerCount": flight.PassengerCount + int64(numberOfTickets)}})
+	if err != nil {
+		return fmt.Errorf("error updating flight passenger count: %s", err.Error())
+	}
+
+	ticket := model.Ticket{
+		Flight: *flight,
+	}
+
+	for i := 0; i < numberOfTickets; i++ {
+		service.UserRepo.AddTicketToUser(userID, ticket)
+	}
+
+	return err
+}
+
 func (service *UserService) Login(user *model.User) (*model.User, error) {
 	filter := bson.M{"email": user.Email}
 
