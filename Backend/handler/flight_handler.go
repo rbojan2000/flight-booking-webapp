@@ -2,7 +2,6 @@ package handler
 
 import (
 	"encoding/json"
-	"flightbooking-app/model"
 	"flightbooking-app/model/dto"
 	"flightbooking-app/service"
 	"fmt"
@@ -57,15 +56,17 @@ func (handler *FlightHandler) GetFlightPrice(writer http.ResponseWriter, req *ht
 	json.NewEncoder(writer).Encode(price)
 }
 
+func enableCors(w *http.ResponseWriter) {
+	(*w).Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+}
+
 func (handler *FlightHandler) Create(writer http.ResponseWriter, req *http.Request) {
-	var flight model.Flight
-	err := json.NewDecoder(req.Body).Decode(&flight)
-	if err != nil {
-		println("Error while parsing json")
-		writer.WriteHeader(http.StatusExpectationFailed)
-		return
-	}
-	err = handler.FlightService.Create(&flight)
+	enableCors(&writer)
+	var flightDto dto.FlightDTO
+	err := json.NewDecoder(req.Body).Decode(&flightDto)
+
+	err = handler.FlightService.Create(&flightDto)
+
 	if err != nil {
 		fmt.Println("Error:", err)
 		writer.WriteHeader(http.StatusExpectationFailed)

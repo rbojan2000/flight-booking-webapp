@@ -2,27 +2,44 @@ package service
 
 import (
 	"flightbooking-app/model"
+	"flightbooking-app/model/dto"
 	"flightbooking-app/repo"
 	"flightbooking-app/utils"
 	"fmt"
-	"time"
-
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"strconv"
+	"time"
 )
 
 type FlightService struct {
 	FlightRepo *repo.FlightRepository
 }
 
-func (service *FlightService) Create(flight *model.Flight) error {
-	err := service.FlightRepo.Create(flight)
+func (service *FlightService) Create(flightDto *dto.FlightDTO) error {
+	var flight model.Flight
+	flight.Arrival.City = flightDto.ArrivalCity
+	flight.Arrival.Country = flightDto.ArrivalCountry
+	flight.Departure.City = flightDto.DepartureCity
+	flight.Departure.Country = flightDto.DepartureCountry
+	flight.Price, _ = strconv.ParseFloat(flightDto.Price, 64)
+	flight.PassengerCount, _ = strconv.ParseInt(flightDto.TicketNum, 10, 32)
+	flight.Capacity, _ = strconv.ParseInt(flightDto.TicketNum, 10, 0)
+
+	date, _ := time.Parse("2006-01-02, 15:04", flightDto.DateAndTime)
+	flight.Date = date
+
+	if flight.Price <= 0 || flight.PassengerCount <= 0 {
+		return fmt.Errorf("You can't enter negative number !")
+	}
+
+	err := service.FlightRepo.Create(&flight)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (service *FlightService) GetTicketPrice(arrivalCity string, departureCity string, date string, ticketNum int) (float64, error) {
+func (service *FlightService) GetTicketPrice(arrivalCity string, departureCity string, date string, ticketNum int64) (float64, error) {
 	dateFormatter := utils.DateFormatter{Format: time.RFC3339}
 	parsedDate, err := dateFormatter.ParseYearMonthDayOfDateString(date)
 

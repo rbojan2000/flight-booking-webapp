@@ -7,7 +7,6 @@ import (
 	"flightbooking-app/server"
 	"flightbooking-app/service"
 	"flightbooking-app/utils"
-
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
@@ -23,14 +22,12 @@ func main() {
 		panic(err)
 	}
 
-	
 	flightRepo := &repo.FlightRepository{Collection: client.Database("xws").Collection("flights")}
 	flightService := &service.FlightService{FlightRepo: flightRepo}
 	flightHandler := &handler.FlightHandler{FlightService: flightService}
 	userRepo := &repo.UserRepository{Collection: client.Database("xws").Collection("users")}
 	userService := &service.UserService{UserRepo: userRepo}
 	userHandler := &handler.UserHandler{UserService: userService}
-
 
 	server.StartServer(userHandler, flightHandler)
 }
