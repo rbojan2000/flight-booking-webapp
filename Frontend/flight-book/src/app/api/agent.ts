@@ -98,9 +98,11 @@ const Flights = {
 };
 
 const Tickets = {
-  ticketsForUser: (id: any) => requests.get("userTickets/" + id),
-};
+  flights:() => requests.get('flights/getAll'),
+  ticketsForUser: (id: any) => requests.get('userTickets/'+id),
+  create: (values: any) => requests.post('buyTicket', createData(values)), 
 
+};
 const agent = {
   Account,
   Admin,

@@ -1,3 +1,0 @@
-MONGO_CONNECTION_PORT = "mongodb://localhost:27017"
-SECRET_KEY = "5j8SJN9A7YKD4k4N6iKPZoxfHJjJ+u6sUYjCuV6o/GTz5WNsRhjn8rmWKN0lkJPE"
-CLIENT_PORT = "http://localhost:3000"

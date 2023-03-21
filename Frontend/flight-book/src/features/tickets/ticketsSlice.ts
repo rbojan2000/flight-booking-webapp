@@ -1,13 +1,18 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { FieldValues } from "react-hook-form/dist/types";
 import agent from "../../app/api/agent";
 import { Ticket } from "../../app/models/ticket";
 
+import { Flight } from "../../app/models/flight";
+
 interface TicketsState {
   tickets: Ticket[];
+  flights: Flight[];
 }
 
 const initialState: TicketsState = {
-  tickets: []
+  tickets: [],
+  flights: []
 }
 
 export const fetchTickets = createAsyncThunk<any[], void>(
@@ -26,6 +31,36 @@ export const fetchTickets = createAsyncThunk<any[], void>(
   }
 );
 
+
+export const fetchFlights = createAsyncThunk<any[], void>(
+  "tickets/fetchFlightsAsync",
+  async (_, thunkAPI) => {
+    try {
+      const response = await agent.Tickets.flights();
+      return response;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue({ error: error.data });
+    }
+  }
+);
+
+
+export const createTicket = createAsyncThunk<any, FieldValues>(
+  "/buyTicket",
+  async (data, thunkAPI) => {
+    try {
+      var id = "6413607fc2fac0c7689d944b";
+      window.alert(JSON.stringify(data))
+      let buyTicketDTO = {flightID: data.selectedFlightInfo.ID, userID: id, numberOfTickets:data.numberOfTickets}   
+      const response = await agent.Tickets.create(buyTicketDTO);
+   
+      return true;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue({ error: error.data });
+    }
+  }
+)
+
 export const ticketSlice = createSlice({
   name: "tickets",
   initialState,
@@ -33,6 +68,9 @@ export const ticketSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(fetchTickets.fulfilled, (state, { payload }) => {
       state.tickets = payload;
+    });
+     builder.addCase(fetchFlights.fulfilled, (state, { payload }) => {
+      state.flights = payload;
     });
   }
 });

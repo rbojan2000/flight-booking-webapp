@@ -12,7 +12,8 @@ import (
 )
 
 type UserService struct {
-	UserRepo *repo.UserRepository
+	UserRepo   *repo.UserRepository
+	FlightRepo *repo.FlightRepository
 }
 
 func (service *UserService) Create(user *model.User) error {
@@ -30,6 +31,12 @@ func (service *UserService) GetTicketsByUserID(id primitive.ObjectID) ([]model.T
 	}
 	return tickets, nil
 }
+
+func (service *UserService) AssignTicketToUser(userID primitive.ObjectID, flightID primitive.ObjectID, numberOfTickets int) error {
+
+	return nil
+}
+
 func (service *UserService) Login(user *model.User) (*model.User, error) {
 	filter := bson.M{"email": user.Email}
 

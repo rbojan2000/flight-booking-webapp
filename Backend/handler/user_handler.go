@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -68,6 +69,31 @@ func (handler *UserHandler) Login(writer http.ResponseWriter, req *http.Request)
 
 	writer.Header().Set("Authorization", "Bearer "+tokenString)
 	writer.WriteHeader(http.StatusOK)
+}
+
+func (handler *UserHandler) BuyTicket(writer http.ResponseWriter, req *http.Request) {
+	parseErr := req.ParseMultipartForm(32 << 20) // parse request body with max memory of 32 MB
+
+	if parseErr != nil {
+		http.Error(writer, parseErr.Error(), http.StatusBadRequest)
+		return
+	}
+
+	userID := req.FormValue("userID")
+	numberOfTickets := req.FormValue("numberOfTickets")
+	flightID := req.FormValue("flightID")
+
+	objectUserID, _ := primitive.ObjectIDFromHex(userID)
+	objectFlightID, _ := primitive.ObjectIDFromHex(flightID)
+
+	numOfTickets, _ := strconv.Atoi(numberOfTickets)
+
+	err := handler.UserService.AssignTicketToUser(objectUserID, objectFlightID, numOfTickets)
+
+	if err != nil {
+
+	}
+
 }
 
 func (handler *UserHandler) GetUserTickets(writer http.ResponseWriter, req *http.Request) {
