@@ -22,7 +22,7 @@ export const fetchTickets = createAsyncThunk<any[], void>(
   async (_, thunkAPI) => {
     try {
       
-      var id = "6413607fc2fac0c7689d944b";
+      var id = "6421cb05170d8f757b4ffd5a";
       const response = await agent.Tickets.ticketsForUser(id);
       console.log(response);
       return response;
@@ -50,7 +50,7 @@ export const createTicket = createAsyncThunk<any, FieldValues>(
   "/buyTicket",
   async (data, thunkAPI) => {
     try {
-      var id = "6413607fc2fac0c7689d944b";
+      var id = "6421cb05170d8f757b4ffd5a";
       let buyTicketDTO = {flightID: data.selectedFlightInfo.ID, userID: id, numberOfTickets:data.numberOfTickets}   
       await agent.Tickets.create(buyTicketDTO);
    

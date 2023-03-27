@@ -30,5 +30,8 @@ func main() {
 	userService := &service.UserService{UserRepo: userRepo, FlightRepo: flightRepo}
 	userHandler := &handler.UserHandler{UserService: userService}
 
+	data := &utils.DatabaseSeeds{FlightRepo: flightRepo, UserRepo: userRepo}
+	data.SeedData()
+
 	server.StartServer(userHandler, flightHandler)
 }
