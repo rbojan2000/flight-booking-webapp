@@ -6,9 +6,10 @@ import (
 	"flightbooking-app/repo"
 	"flightbooking-app/utils"
 	"fmt"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"strconv"
 	"time"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type FlightService struct {
