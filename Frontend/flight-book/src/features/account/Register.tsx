@@ -23,17 +23,15 @@ export default function Register() {
     mode: "onTouched",
   });
 
-  function handleApiErorrs(errors: any) {
-    if (errors) {
-      errors.forEach((error: string) => {
-        if (error.includes("Password")) {
-          setError("password", { message: error });
-        } else if (error.includes("Email")) {
-          setError("email", { message: error });
-        } else if (error.includes("Username")) {
-          setError("username", { message: error });
-        }
-      });
+  function handleApiErorrs(error: any) {
+    if (error) {
+      if (error.data.includes("Password")) {
+        setError("password", { message: error.data });
+      } else if (error.data.includes("Email")) {
+        setError("email", { message: error.data });
+      } else if (error.data.includes("Username")) {
+        setError("username", { message: error.data });
+      }
     }
   }
 
@@ -56,25 +54,45 @@ export default function Register() {
       </Typography>
       <Box
         component="form"
-        onSubmit={handleSubmit((data) =>
-          agent.Account.register(data)
+        onSubmit={handleSubmit((data) => {
+          const { name, surname, email, password, country, city } = data;
+          const newData = {
+            name,
+            surname,
+            email,
+            password,
+            address: {
+              country,
+              city,
+            },
+          };
+          agent.Account.register(newData)
             .then(() => {
-              toast.success("Registration succesful - you can now login");
+              toast.success("Registration successful - you can now login");
               navigate("/login");
             })
-            .catch((error: any) => handleApiErorrs(error))
-        )}
+            .catch((error: any) => handleApiErorrs(error));
+        })}
         noValidate
         sx={{ mt: 1 }}
       >
         <TextField
           margin="normal"
           fullWidth
-          label="Username"
+          label="Name"
           autoFocus
-          {...register("username", { required: "Username is required" })}
-          error={!!errors.username}
-          helperText={errors?.username?.message as string}
+          {...register("name", { required: "Name is required" })}
+          error={!!errors.name}
+          helperText={errors?.name?.message as string}
+        />
+        <TextField
+          margin="normal"
+          fullWidth
+          label="Surname"
+          autoFocus
+          {...register("surname", { required: "Surname is required" })}
+          error={!!errors.surname}
+          helperText={errors?.surname?.message as string}
         />
         <TextField
           margin="normal"
@@ -105,6 +123,24 @@ export default function Register() {
           })}
           error={!!errors.password}
           helperText={errors?.password?.message as string}
+        />
+        <TextField
+          margin="normal"
+          fullWidth
+          label="Country"
+          autoFocus
+          {...register("country", { required: "Country is required" })}
+          error={!!errors.country}
+          helperText={errors?.country?.message as string}
+        />
+        <TextField
+          margin="normal"
+          fullWidth
+          label="City"
+          autoFocus
+          {...register("city", { required: "City is required" })}
+          error={!!errors.city}
+          helperText={errors?.city?.message as string}
         />
         <LoadingButton
           disabled={!isValid}

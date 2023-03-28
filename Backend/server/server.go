@@ -13,7 +13,7 @@ func StartServer(handler *handler.UserHandler, flightHandler *handler.FlightHand
 	router := mux.NewRouter().StrictSlash(true)
 	router.Use(middleware.CorsMiddleware)
 
-	router.HandleFunc("/registerUser", handler.Create).Methods("POST")
+	router.HandleFunc("/registerUser", handler.Create).Methods("POST", "OPTIONS")
 	router.HandleFunc("/loginUser", handler.Login).Methods("POST")
 	router.HandleFunc("/buyTicket", handler.BuyTicket).Methods("POST")
 

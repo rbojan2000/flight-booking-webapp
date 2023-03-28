@@ -88,7 +88,7 @@ const Admin = {
 
 const Account = {
   login: (values: any) => requests.post("account/login", values),
-  register: (values: any) => requests.post("account/register", values),
+  register: (values: any) => requests.post("/registerUser", values),
   currentUser: () => requests.get("account/currentUser"),
 };
 
@@ -98,10 +98,9 @@ const Flights = {
 };
 
 const Tickets = {
-  flights:() => requests.get('flights/getAll'),
-  ticketsForUser: (id: any) => requests.get('userTickets/'+id),
-  create: (values: any) => requests.post('buyTicket', createData(values)), 
-
+  flights: () => requests.get("flights/getAll"),
+  ticketsForUser: (id: any) => requests.get("userTickets/" + id),
+  create: (values: any) => requests.post("buyTicket", createData(values)),
 };
 const agent = {
   Account,
