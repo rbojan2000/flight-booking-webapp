@@ -93,8 +93,9 @@ const Account = {
 };
 
 const Flights = {
-  flights: () => requests.get("flights/getAll"),
+  flights: () => requests.get("flights/getAllAvailable"),
   create: (flight: any) => requests.postForm("flights", createData(flight)),
+  remove: (id: string) => requests.delete("flights/" + id),
 };
 
 const Tickets = {

@@ -2,6 +2,7 @@ import { FieldValues } from "react-hook-form/dist/types";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import agent from "../../app/api/agent";
 import { Flight } from "../../app/models/flight";
+import { toast } from "react-toastify";
 
 interface FlightsState {
   flights: Flight[];
@@ -37,8 +38,29 @@ export const createFlight = createAsyncThunk<any, FieldValues>(
 
   async (data, thunkAPI) => {
     try {
-      console.log(data);
-      const response = await agent.Flights.create(data);
+      const response = await agent.Flights.create(data)
+        .then(() => {
+          toast.success("Successful flight creation !");
+        })
+        .catch((error: any) => toast.error(error));
+      return response;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue({ error: error.data });
+    }
+  }
+);
+
+export const removeFlight = createAsyncThunk<any, FieldValues>(
+  "flights/removeFlight",
+
+  async (data, thunkAPI) => {
+    try {
+      console.log(`Remove flight with ID: ${data.flightId}`);
+      const response = await agent.Flights.remove(data.flightId)
+        .then(() => {
+          toast.success("Successful remove flight" + data.flightId + "!");
+        })
+        .catch((error: any) => toast.error(error));
       return response;
     } catch (error: any) {
       return thunkAPI.rejectWithValue({ error: error.data });

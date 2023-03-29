@@ -21,8 +21,9 @@ func StartServer(handler *handler.UserHandler, flightHandler *handler.FlightHand
 
 	router.HandleFunc("/flights", flightHandler.Create).Methods("POST", "OPTIONS")
 	router.HandleFunc("/flights/getAll", flightHandler.GetAll).Methods("GET")
+	router.HandleFunc("/flights/getAllAvailable", flightHandler.GetAllAvailable).Methods("GET")
 	router.HandleFunc("/flights/{id}", flightHandler.GetById).Methods("GET")
-	router.HandleFunc("/flights/{id}", flightHandler.Delete).Methods("DELETE")
+	router.HandleFunc("/flights/{id}", flightHandler.Delete).Methods("DELETE", "OPTIONS")
 
 	log.Fatal(http.ListenAndServe(":8080", router))
 }

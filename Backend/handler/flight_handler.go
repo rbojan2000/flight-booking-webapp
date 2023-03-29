@@ -17,6 +17,7 @@ type FlightHandler struct {
 }
 
 func (handler *FlightHandler) GetAll(writer http.ResponseWriter, req *http.Request) {
+	enableCors(&writer)
 	flights, err := handler.FlightService.GetAll()
 
 	if err != nil {
@@ -24,9 +25,27 @@ func (handler *FlightHandler) GetAll(writer http.ResponseWriter, req *http.Reque
 		writer.WriteHeader(http.StatusExpectationFailed)
 		return
 	}
-	writer.WriteHeader(http.StatusCreated)
-	json.NewEncoder(writer).Encode(flights)
+
+	writer.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	writer.Header().Set("Content-Type", "application/json")
+	writer.WriteHeader(http.StatusOK)
+	json.NewEncoder(writer).Encode(flights)
+}
+
+func (handler *FlightHandler) GetAllAvailable(writer http.ResponseWriter, req *http.Request) {
+	enableCors(&writer)
+	flights, err := handler.FlightService.GetAllAvailable()
+
+	if err != nil {
+		println("Error while getting flights")
+		writer.WriteHeader(http.StatusExpectationFailed)
+		return
+	}
+
+	writer.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	writer.Header().Set("Content-Type", "application/json")
+	writer.WriteHeader(http.StatusOK)
+	json.NewEncoder(writer).Encode(flights)
 }
 
 func (handler *FlightHandler) GetFlightPrice(writer http.ResponseWriter, req *http.Request) {
@@ -66,7 +85,6 @@ func (handler *FlightHandler) Create(writer http.ResponseWriter, req *http.Reque
 	err := json.NewDecoder(req.Body).Decode(&flightDto)
 
 	err = handler.FlightService.Create(&flightDto)
-
 	if err != nil {
 		fmt.Println("Error:", err)
 		writer.WriteHeader(http.StatusExpectationFailed)
@@ -90,20 +108,19 @@ func (handler *FlightHandler) GetById(writer http.ResponseWriter, req *http.Requ
 	json.NewEncoder(writer).Encode(flight)
 }
 
-func (handler *FlightHandler) Delete(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	params := mux.Vars(r)
+func (handler *FlightHandler) Delete(writer http.ResponseWriter, req *http.Request) {
+	enableCors(&writer)
+	params := mux.Vars(req)
 	id, _ := primitive.ObjectIDFromHex(params["id"])
 
-	deletedCount, err := handler.FlightService.Delete(id)
+	forDelete, err := handler.FlightService.GetById(id)
 	if err != nil {
 		fmt.Println(err)
-		w.WriteHeader(http.StatusInternalServerError)
+		writer.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	if deletedCount == 0 {
-		w.WriteHeader(http.StatusNotFound)
-		return
-	}
-	w.WriteHeader(http.StatusOK)
+	handler.FlightService.Delete(forDelete.ID)
+	writer.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	writer.Header().Set("Content-Type", "application/json")
+	writer.WriteHeader(http.StatusOK)
 }

@@ -13,16 +13,15 @@ interface TicketsState {
 
 const initialState: TicketsState = {
   tickets: [],
-  flights: []
-}
+  flights: [],
+};
 
 export const fetchTickets = createAsyncThunk<any[], void>(
-  'tickets/fetchTicketsAsync',
-  
+  "tickets/fetchTicketsAsync",
+
   async (_, thunkAPI) => {
     try {
-      
-      var id = "6421cb05170d8f757b4ffd5a";
+      var id = "6421cca01c90fd55b6d045b7";
       const response = await agent.Tickets.ticketsForUser(id);
       console.log(response);
       return response;
@@ -31,7 +30,6 @@ export const fetchTickets = createAsyncThunk<any[], void>(
     }
   }
 );
-
 
 export const fetchFlights = createAsyncThunk<any[], void>(
   "tickets/fetchFlightsAsync",
@@ -45,21 +43,24 @@ export const fetchFlights = createAsyncThunk<any[], void>(
   }
 );
 
-
 export const createTicket = createAsyncThunk<any, FieldValues>(
   "/buyTicket",
   async (data, thunkAPI) => {
     try {
-      var id = "6421cb05170d8f757b4ffd5a";
-      let buyTicketDTO = {flightID: data.selectedFlightInfo.ID, userID: id, numberOfTickets:data.numberOfTickets}   
+      var id = "6421cca01c90fd55b6d045b7";
+      let buyTicketDTO = {
+        flightID: data.selectedFlightInfo.ID,
+        userID: id,
+        numberOfTickets: data.numberOfTickets,
+      };
       await agent.Tickets.create(buyTicketDTO);
-   
+
       return true;
     } catch (error: any) {
       return thunkAPI.rejectWithValue({ error: error.data });
     }
   }
-)
+);
 
 export const ticketSlice = createSlice({
   name: "tickets",
@@ -69,17 +70,16 @@ export const ticketSlice = createSlice({
     builder.addCase(fetchTickets.fulfilled, (state, { payload }) => {
       state.tickets = payload;
     });
-     builder.addCase(fetchFlights.fulfilled, (state, { payload }) => {
+    builder.addCase(fetchFlights.fulfilled, (state, { payload }) => {
       state.flights = payload;
     });
 
     builder.addCase(createTicket.rejected, (state, { payload }) => {
       const errorMessage = (payload as { error: string }).error;
-      toast.error(errorMessage)
+      toast.error(errorMessage);
     });
     builder.addCase(createTicket.fulfilled, (state, { payload }) => {
-      toast.success("Congrats! You bought tickets.")
+      toast.success("Congrats! You bought tickets.");
     });
-    
-  }
+  },
 });
