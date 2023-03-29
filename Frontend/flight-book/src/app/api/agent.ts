@@ -88,7 +88,7 @@ const Admin = {
 
 const Account = {
   login: (values: any) => requests.post("account/login", values),
-  register: (values: any) => requests.post("account/register", values),
+  register: (values: any) => requests.post("/registerUser", values),
   currentUser: () => requests.get("account/currentUser"),
 };
 

@@ -58,10 +58,10 @@ func RequireAuth(userType string, fn func(w http.ResponseWriter, r *http.Request
 }
 
 func CorsMiddleware(next http.Handler) http.Handler {
-	return handlers.CORS(
-		handlers.AllowedOrigins([]string{os.Getenv("CLIENT_PORT")}),
-		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}),
-		handlers.AllowedHeaders([]string{"Content-Type"}),
-		handlers.AllowCredentials(),
-	)(next)
+	allowedHeaders := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"})
+	allowedMethods := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS"})
+	allowedOrigins := handlers.AllowedOrigins([]string{os.Getenv("CLIENT_PORT")})
+	allowCredentials := handlers.AllowCredentials()
+
+	return handlers.CORS(allowedHeaders, allowedMethods, allowedOrigins, allowCredentials)(next)
 }
