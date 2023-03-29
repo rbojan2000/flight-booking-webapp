@@ -20,15 +20,17 @@ func (d *DatabaseSeeds) SeedData() error {
 		Capacity:       230,
 		Price:          123,
 		PassengerCount: 120,
+		Available:      true,
 	}
 
 	flight2 := model.Flight{
 		Date:           time.Now(),
-		Departure:      model.Location{Country: "Amsterdam", City: "Netherlands"},
-		Arrival:        model.Location{Country: "Zagreb", City: "Croatia"},
+		Departure:      model.Location{Country: "Netherlands", City: "Amsterdam"},
+		Arrival:        model.Location{Country: "Croatia", City: "Zagreb"},
 		Capacity:       160,
 		Price:          228,
 		PassengerCount: 37,
+		Available:      true,
 	}
 
 	tickets := []model.Ticket{}

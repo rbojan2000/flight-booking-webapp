@@ -93,15 +93,15 @@ const Account = {
 };
 
 const Flights = {
-  flights: () => requests.get("flights/getAll"),
+  flights: () => requests.get("flights/getAllAvailable"),
   create: (flight: any) => requests.postForm("flights", createData(flight)),
+  remove: (id: string) => requests.delete("flights/" + id),
 };
 
 const Tickets = {
-  flights:() => requests.get('flights/getAll'),
-  ticketsForUser: (id: any) => requests.get('userTickets/'+id),
-  create: (values: any) => requests.post('buyTicket', createData(values)), 
-
+  flights: () => requests.get("flights/getAll"),
+  ticketsForUser: (id: any) => requests.get("userTickets/" + id),
+  create: (values: any) => requests.post("buyTicket", createData(values)),
 };
 const agent = {
   Account,

@@ -14,4 +14,5 @@ type Flight struct {
 	PassengerCount int64              `bson:"passengerCount,omitempty"`
 	Capacity       int64              `bson:"capacity,omitempty"`
 	Price          float64            `bson:"price,omitempty"`
+	Available      bool               `bson:"available"`
 }
