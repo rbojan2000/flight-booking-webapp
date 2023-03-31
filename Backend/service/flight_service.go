@@ -4,7 +4,6 @@ import (
 	"flightbooking-app/model"
 	"flightbooking-app/model/dto"
 	"flightbooking-app/repo"
-	"flightbooking-app/utils"
 	"fmt"
 	"strconv"
 	"time"
@@ -40,27 +39,12 @@ func (service *FlightService) Create(flightDto *dto.FlightDTO) error {
 	return nil
 }
 
-func (service *FlightService) GetTicketPrice(arrivalCity string, departureCity string, date string, ticketNum int64) (float64, error) {
-	dateFormatter := utils.DateFormatter{Format: time.RFC3339}
-	parsedDate, err := dateFormatter.ParseYearMonthDayOfDateString(date)
-
+func (service *FlightService) GetFreeFlights() ([]*model.Flight, error) {
+	flights, err := service.FlightRepo.FindAllAvailableByDateAndBusyness()
 	if err != nil {
-		return -1, fmt.Errorf(fmt.Sprintf("Wrong format date!"))
+		return nil, fmt.Errorf(fmt.Sprintf("There are no flights!"))
 	}
-
-	flight, err := service.FlightRepo.GetFlightByArrivalDeppartureAndDate(arrivalCity, departureCity, parsedDate)
-
-	if err != nil {
-		return -1, fmt.Errorf(fmt.Sprintf("There is no flight on relation %s - %s.", arrivalCity, departureCity))
-	}
-
-	if flight.PassengerCount+ticketNum > flight.Capacity {
-		return -1, fmt.Errorf(fmt.Sprintf("You can not buy %d tickets! There is only left %d tikets!", ticketNum, flight.Capacity-flight.PassengerCount))
-	}
-
-	price := float64(ticketNum) * flight.Price
-
-	return price, err
+	return flights, nil
 }
 
 func (service *FlightService) GetAll() ([]*model.Flight, error) {

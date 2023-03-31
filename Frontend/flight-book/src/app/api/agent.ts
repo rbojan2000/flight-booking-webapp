@@ -99,7 +99,7 @@ const Flights = {
 };
 
 const Tickets = {
-  flights: () => requests.get("flights/getAll"),
+  flights: () => requests.get("flights/getFreeFlights"),
   ticketsForUser: (id: any) => requests.get("userTickets/" + id),
   create: (values: any) => requests.post("buyTicket", createData(values)),
 };

@@ -32,6 +32,22 @@ func (handler *FlightHandler) GetAll(writer http.ResponseWriter, req *http.Reque
 	json.NewEncoder(writer).Encode(flights)
 }
 
+func (handler *FlightHandler) GetFreeFlights(writer http.ResponseWriter, req *http.Request) {
+
+	flights, err := handler.FlightService.GetFreeFlights()
+
+	if err != nil {
+		println("Error while getting flights")
+		writer.WriteHeader(http.StatusExpectationFailed)
+		return
+	}
+
+	writer.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	writer.Header().Set("Content-Type", "application/json")
+	writer.WriteHeader(http.StatusOK)
+	json.NewEncoder(writer).Encode(flights)
+}
+
 func (handler *FlightHandler) GetAllAvailable(writer http.ResponseWriter, req *http.Request) {
 	enableCors(&writer)
 	flights, err := handler.FlightService.GetAllAvailable()
@@ -46,33 +62,6 @@ func (handler *FlightHandler) GetAllAvailable(writer http.ResponseWriter, req *h
 	writer.Header().Set("Content-Type", "application/json")
 	writer.WriteHeader(http.StatusOK)
 	json.NewEncoder(writer).Encode(flights)
-}
-
-func (handler *FlightHandler) GetFlightPrice(writer http.ResponseWriter, req *http.Request) {
-	var ticketPriceDTO dto.TicketPriceDTO
-
-	err := json.NewDecoder(req.Body).Decode(&ticketPriceDTO)
-	if err != nil {
-		println("Error while parsing json")
-		writer.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
-	arrivalCity := ticketPriceDTO.ArrivalCity
-	departureCity := ticketPriceDTO.DepartureCity
-	date := ticketPriceDTO.Date
-	ticketNum := ticketPriceDTO.TicketNum
-
-	price, err := handler.FlightService.GetTicketPrice(arrivalCity, departureCity, date, ticketNum)
-	fmt.Println(price)
-	fmt.Println(err)
-
-	if err != nil {
-		writer.WriteHeader(http.StatusExpectationFailed)
-		return
-	}
-	writer.WriteHeader(http.StatusOK)
-	json.NewEncoder(writer).Encode(price)
 }
 
 func enableCors(w *http.ResponseWriter) {
