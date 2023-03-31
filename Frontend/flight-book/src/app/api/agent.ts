@@ -88,20 +88,20 @@ const Admin = {
 
 const Account = {
   login: (values: any) => requests.post("account/login", values),
-  register: (values: any) => requests.post("account/register", values),
+  register: (values: any) => requests.post("/registerUser", values),
   currentUser: () => requests.get("account/currentUser"),
 };
 
 const Flights = {
-  flights: () => requests.get("flights/getAll"),
+  flights: () => requests.get("flights/getAllAvailable"),
   create: (flight: any) => requests.postForm("flights", createData(flight)),
+  remove: (id: string) => requests.delete("flights/" + id),
 };
 
 const Tickets = {
-  flights:() => requests.get('flights/getAll'),
-  ticketsForUser: (id: any) => requests.get('userTickets/'+id),
-  create: (values: any) => requests.post('buyTicket', createData(values)), 
-
+  flights: () => requests.get("flights/getFreeFlights"),
+  ticketsForUser: (id: any) => requests.get("userTickets/" + id),
+  create: (values: any) => requests.post("buyTicket", createData(values)),
 };
 const agent = {
   Account,

@@ -28,8 +28,8 @@ import "./styles.css";
 
 export default function BuyTicket() {
   const dispatch: AppDispatch = useDispatch();
-  const flights = useSelector((state: RootState) => state.ticketsSlice.flights);
-
+ const flights = useSelector((state: RootState) => state.ticketsSlice.flights);
+  
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedFlight, setSelectedFlight] = useState("");
   const [numberOfTickets, setNumberOfTickets] = useState(1);

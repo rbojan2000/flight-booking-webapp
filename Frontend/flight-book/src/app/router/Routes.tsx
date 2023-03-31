@@ -1,5 +1,5 @@
-import { Login } from "@mui/icons-material";
 import { createBrowserRouter, Navigate } from "react-router-dom";
+import Login from "../../features/account/Login";
 import Register from "../../features/account/Register";
 import FlightsPage from "../../features/flights/FlightsPage";
 import BuyTicket from "../../features/tickets/BuyTicket";

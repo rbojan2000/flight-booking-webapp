@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"flightbooking-app/model"
+	"fmt"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -43,13 +44,14 @@ func (repo *FlightRepository) GetById(flightId primitive.ObjectID) (*model.Fligh
 	return &f, err
 }
 
-func (repo *FlightRepository) Delete(id primitive.ObjectID) (int64, error) {
+func (repo *FlightRepository) SoftDelete(id primitive.ObjectID) error {
 	filter := bson.M{"_id": id}
-	result, err := repo.Collection.DeleteOne(context.Background(), filter)
+	update := bson.M{"$set": bson.M{"available": false}}
+	_, err := repo.Collection.UpdateOne(context.Background(), filter, update)
 	if err != nil {
-		return 0, err
+		return err
 	}
-	return result.DeletedCount, nil
+	return nil
 }
 
 func (repo *FlightRepository) GetFlightByArrivalDeppartureAndDate(arrivalCity string, departureCity string, date time.Time) (*model.Flight, error) {
@@ -86,6 +88,55 @@ func (repo *FlightRepository) FindAll() ([]*model.Flight, error) {
 	if err := cursor.Err(); err != nil {
 		return nil, err
 	}
+
+	return flights, nil
+}
+
+func (repo *FlightRepository) FindAllAvailable() ([]*model.Flight, error) {
+	filter := bson.M{"available": bson.M{"$ne": false}}
+	cursor, err := repo.Collection.Find(context.Background(), filter)
+	if err != nil {
+		return nil, err
+	}
+	var flights []*model.Flight
+	for cursor.Next(context.Background()) {
+		var flight model.Flight
+		if err := cursor.Decode(&flight); err != nil {
+			return nil, err
+		}
+		flights = append(flights, &flight)
+	}
+	if err := cursor.Err(); err != nil {
+		return nil, err
+	}
+
+	return flights, nil
+}
+
+func (repo *FlightRepository) FindAllAvailableByDateAndBusyness() ([]*model.Flight, error) {
+	now := time.Now()
+
+	filter := bson.M{
+		"date":      bson.M{"$gt": now},
+		"available": true,
+	}
+
+	cursor, err := repo.Collection.Find(context.Background(), filter)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(context.Background())
+
+	var flights []*model.Flight
+	for cursor.Next(context.Background()) {
+		var flight model.Flight
+		if err := cursor.Decode(&flight); err != nil {
+			return nil, err
+		}
+		flights = append(flights, &flight)
+	}
+
+	fmt.Print(flights)
 
 	return flights, nil
 }
