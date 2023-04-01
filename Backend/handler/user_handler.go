@@ -28,6 +28,7 @@ func (handler *UserHandler) Create(writer http.ResponseWriter, req *http.Request
 		writer.WriteHeader(http.StatusBadRequest)
 		return
 	}
+	user.Type = 1
 	err = handler.UserService.Create(&user)
 	if err != nil {
 		if mongo.IsDuplicateKeyError(err) {
@@ -59,7 +60,8 @@ func (handler *UserHandler) Login(writer http.ResponseWriter, req *http.Request)
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"userID":   usr.ID.Hex(),
 		"exp":      time.Now().Add(time.Minute * 30).Unix(),
-		"userType": usr.Type,
+		"email": usr.Email,
+		"role": usr.Type,
 	})
 
 	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET_KEY")))
@@ -70,6 +72,7 @@ func (handler *UserHandler) Login(writer http.ResponseWriter, req *http.Request)
 
 	writer.Header().Set("Authorization", "Bearer "+tokenString)
 	writer.WriteHeader(http.StatusOK)
+	writer.Write([]byte(tokenString))
 }
 
 func (handler *UserHandler) BuyTicket(writer http.ResponseWriter, req *http.Request) {

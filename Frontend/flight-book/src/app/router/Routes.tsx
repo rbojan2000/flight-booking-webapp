@@ -15,12 +15,16 @@ export const router = createBrowserRouter([
       // authenticated routes za loginovanog usera
       { element: <RequireAuth />, children: [] },
       // admin routes
-      { element: <RequireAuth roles={[]} />, children: [] },
+      {
+        element: <RequireAuth roles={["USER"]} />,
+        children: [
+          { path: "buyTicket", element: <BuyTicket /> },
+          { path: "myTickets", element: <MyTickets /> },
+        ],
+      },
       { path: "flights", element: <FlightsPage /> },
       { path: "login", element: <Login /> },
       { path: "register", element: <Register /> },
-      { path: "buyTicket", element: <BuyTicket /> },
-      { path: "myTickets", element: <MyTickets /> },
 
       { path: "*", element: <Navigate replace to="/not-found" /> },
     ],

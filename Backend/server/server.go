@@ -14,7 +14,7 @@ func StartServer(handler *handler.UserHandler, flightHandler *handler.FlightHand
 	router.Use(middleware.CorsMiddleware)
 
 	router.HandleFunc("/registerUser", handler.Create).Methods("POST", "OPTIONS")
-	router.HandleFunc("/loginUser", handler.Login).Methods("POST")
+	router.HandleFunc("/loginUser", handler.Login).Methods("POST", "OPTIONS")
 	router.HandleFunc("/buyTicket", handler.BuyTicket).Methods("POST")
 
 	router.HandleFunc("/userTickets/{id}", (handler.GetUserTickets)).Methods("GET")
