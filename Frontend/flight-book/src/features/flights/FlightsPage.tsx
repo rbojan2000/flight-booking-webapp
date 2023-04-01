@@ -17,7 +17,7 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../app/store/configureStore";
-import { fetchFlights, removeFlight } from "./flightsSlice";
+import { fetchFlights, removeFlight, searchFlight } from "./flightsSlice";
 import { makeStyles } from "@material-ui/core/styles";
 import { createFlight } from "./flightsSlice";
 import { Flight } from "../../app/models/flight";
@@ -62,7 +62,7 @@ export default function FlightsPage() {
 
   const [SearchDepartureCity, setSearchDepartureCity] = useState("");
   const [SearchArrivalCity, setSearchArrivalCity] = useState("");
-  const [SearchPassengerCount, setSearchPassengerCount] = useState(0);
+  const [SearchPassengerCount, setSearchPassengerCount] = useState("");
   const [SearchDate, setSearchDate] = useState("");
 
   function handleDepartureChange(event: any) {
@@ -95,44 +95,6 @@ export default function FlightsPage() {
     setOpen(false);
   };
 
-  function filterData() {
-    let filteredData = flights;
-
-    if (SearchDepartureCity) {
-      filteredData = filteredData.filter((item) =>
-        item.Departure.City.toLowerCase().includes(
-          SearchDepartureCity.toLowerCase()
-        )
-      );
-    }
-
-    if (SearchArrivalCity) {
-      filteredData = filteredData.filter((item) =>
-        item.Arrival.City.toLowerCase().includes(
-          SearchArrivalCity.toLowerCase()
-        )
-      );
-    }
-
-    if (SearchPassengerCount) {
-      filteredData = filteredData.filter(
-        (item) => SearchPassengerCount <= item.PassengerCount
-      );
-    }
-
-    if (SearchDate) {
-      filteredData = filteredData.filter(
-        (item) =>
-          moment.utc(item.Date).utc().format("DD.MM.YYYY") ===
-          moment.utc(SearchDate).utc().format("DD.MM.YYYY")
-      );
-    }
-
-    return filteredData;
-  }
-
-  const filteredData = filterData();
-
   const handleRemoveFlight = (flightId: string) => {
     dispatch(
       removeFlight({
@@ -161,6 +123,7 @@ export default function FlightsPage() {
         Price,
       })
     );
+
     setArrivalCity("");
     setArrivalCountry("");
     setDepartureCity("");
@@ -170,6 +133,18 @@ export default function FlightsPage() {
     setPrice("");
     setTicketNum("");
     setOpen(false);
+    window.location.reload();
+  };
+
+  const handleSearch = () => {
+    dispatch(
+      searchFlight({
+        SearchDepartureCity,
+        SearchArrivalCity,
+        SearchDate,
+        SearchPassengerCount,
+      })
+    );
   };
 
   return (
@@ -209,6 +184,9 @@ export default function FlightsPage() {
           onChange={handleDateChange}
           style={{ flex: 1, marginRight: "10px" }}
         />
+        <Button variant="contained" color="primary" onClick={handleSearch}>
+          Search
+        </Button>
       </div>
 
       <div></div>
@@ -234,7 +212,7 @@ export default function FlightsPage() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredData.map((flight: Flight) => (
+            {flights.map((flight: Flight) => (
               <TableRow key={flight.ID}>
                 <TableCell>
                   {flight.Departure.Country}, {flight.Departure.City}
@@ -245,7 +223,7 @@ export default function FlightsPage() {
                 <TableCell>
                   {moment.utc(flight.Date).utc().format("DD.MM.YYYY, HH:mm")}
                 </TableCell>
-                <TableCell>{flight.Price}</TableCell>
+                <TableCell>{flight.Price}$</TableCell>
                 <TableCell>
                   {flight.PassengerCount}/{flight.Capacity}
                 </TableCell>

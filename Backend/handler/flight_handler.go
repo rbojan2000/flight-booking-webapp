@@ -5,11 +5,12 @@ import (
 	"flightbooking-app/model/dto"
 	"flightbooking-app/service"
 	"fmt"
-	"log"
-	"net/http"
-
 	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"log"
+	"net/http"
+	"strconv"
+	"time"
 )
 
 type FlightHandler struct {
@@ -36,6 +37,41 @@ func (handler *FlightHandler) GetAllAvailable(writer http.ResponseWriter, req *h
 	enableCors(&writer)
 	flights, err := handler.FlightService.GetAllAvailable()
 
+	if err != nil {
+		println("Error while getting flights")
+		writer.WriteHeader(http.StatusExpectationFailed)
+		return
+	}
+
+	writer.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	writer.Header().Set("Content-Type", "application/json")
+	writer.WriteHeader(http.StatusOK)
+	json.NewEncoder(writer).Encode(flights)
+}
+
+func (handler *FlightHandler) GetByParams(writer http.ResponseWriter, req *http.Request) {
+	enableCors(&writer)
+	vars := mux.Vars(req)
+	fmt.Println(vars)
+	flightParams := dto.FlightParamsDTO{
+		SearchDepartureCity:  vars["departure"],
+		SearchArrivalCity:    vars["arrival"],
+		SearchDate:           vars["date"],
+		SearchPassengerCount: vars["count"],
+	}
+	parsedDate, err := time.Parse("2006-01-02", flightParams.SearchDate)
+
+	var capacity int64
+	if flightParams.SearchPassengerCount != "" {
+		c, err := strconv.ParseInt(flightParams.SearchPassengerCount, 10, 0)
+		if err != nil {
+			http.Error(writer, err.Error(), http.StatusBadRequest)
+			return
+		}
+		capacity = c
+	}
+
+	flights, err := handler.FlightService.GetByParams(flightParams.SearchDepartureCity, flightParams.SearchArrivalCity, parsedDate, capacity)
 	if err != nil {
 		println("Error while getting flights")
 		writer.WriteHeader(http.StatusExpectationFailed)
@@ -123,4 +159,5 @@ func (handler *FlightHandler) Delete(writer http.ResponseWriter, req *http.Reque
 	writer.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	writer.Header().Set("Content-Type", "application/json")
 	writer.WriteHeader(http.StatusOK)
+	json.NewEncoder(writer).Encode(forDelete.ID)
 }

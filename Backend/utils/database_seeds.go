@@ -14,7 +14,7 @@ type DatabaseSeeds struct {
 func (d *DatabaseSeeds) SeedData() error {
 
 	flight1 := model.Flight{
-		Date:           time.Now(),
+		Date:           time.Date(2023, time.March, 30, 0, 0, 0, 0, time.UTC),
 		Departure:      model.Location{Country: "Ireland", City: "Dublin"},
 		Arrival:        model.Location{Country: "France", City: "Paris"},
 		Capacity:       230,
