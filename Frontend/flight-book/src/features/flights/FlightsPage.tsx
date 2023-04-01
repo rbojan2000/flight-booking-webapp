@@ -47,6 +47,9 @@ const useStyles = makeStyles((theme: any) => ({
   },
 }));
 
+
+
+
 export default function FlightsPage() {
   const dispatch: AppDispatch = useDispatch();
   const flights = useSelector((state: RootState) => state.flightSlice.flights);
@@ -108,7 +111,10 @@ export default function FlightsPage() {
 
   useEffect(() => {
     dispatch(fetchFlights());
+
   }, [dispatch]);
+
+  var user = JSON.parse(localStorage.getItem("user") || "null");
 
   const handleSubmit = () => {
     const DateAndTime = date + ", " + time;
@@ -200,13 +206,13 @@ export default function FlightsPage() {
               <TableCell sx={{ width: 200 }}>Remaining tickets</TableCell>
               <TableCell>
                 {" "}
-                <Button
+                { user && user.roles?.includes("ADMIN") && <Button
                   variant="contained"
                   color="primary"
                   onClick={handleOpen}
                 >
                   <Add />
-                </Button>
+                </Button>}
               </TableCell>
             </TableRow>
           </TableHead>

@@ -11,7 +11,9 @@ interface AccountState {
 }
 
 const initialState: AccountState = {
-  user: null,
+  user: localStorage.getItem("user")
+  ? JSON.parse(localStorage.getItem("user")!)
+  : null,
 };
 
 export const signInUser = createAsyncThunk<User, FieldValues>(

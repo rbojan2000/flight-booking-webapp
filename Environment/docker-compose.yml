@@ -3,7 +3,7 @@ services:
   server:
     build:
       context: ../Backend
-      dockerfile: ../environment/Dockerfile.serverApp
+      dockerfile: ../Environment/Dockerfile.serverApp
     image: flight_booking_web_server
     container_name: flight_booking_server
     restart: always
@@ -14,17 +14,6 @@ services:
     depends_on:
       - flight_booking_database
 
-  frontend:
-    build:
-      context: ../Frontend/flight-book
-    image: flight_booking_frontend
-    container_name: flight_booking_frontend
-    restart: always
-    networks:
-      - servers
-    ports:
-      - 3000:3000
-      
   flight_booking_database:
     image: mongo
     container_name: mongo
