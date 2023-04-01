@@ -21,8 +21,8 @@ export const fetchTickets = createAsyncThunk<any[], void>(
 
   async (_, thunkAPI) => {
     try {
-      var id = "6421cca01c90fd55b6d045b7";
-      const response = await agent.Tickets.ticketsForUser(id);
+      const user = JSON.parse(localStorage.getItem("user") || "");
+      const response = await agent.Tickets.ticketsForUser(user.userID);
       console.log(response);
       return response;
     } catch (error: any) {
@@ -47,10 +47,11 @@ export const createTicket = createAsyncThunk<any, FieldValues>(
   "/buyTicket",
   async (data, thunkAPI) => {
     try {
-      var id = "6421cca01c90fd55b6d045b7";
+      const user = JSON.parse(localStorage.getItem("user") || "");
+
       let buyTicketDTO = {
         flightID: data.selectedFlightInfo.ID,
-        userID: id,
+        userID: user.userID,
         numberOfTickets: data.numberOfTickets,
       };
       await agent.Tickets.create(buyTicketDTO);
