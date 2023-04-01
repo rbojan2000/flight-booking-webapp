@@ -114,7 +114,6 @@ func (repo *FlightRepository) FindAllAvailable() ([]*model.Flight, error) {
 }
 
 func (repo *FlightRepository) FindByParams(departureCity string, arrivalCity string, date time.Time, capacity int64) ([]*model.Flight, error) {
-
 	filter := bson.M{"available": true}
 	if departureCity != "" && departureCity != "-1" {
 		filter["departure.city"] = bson.M{"$regex": primitive.Regex{Pattern: departureCity, Options: "i"}}

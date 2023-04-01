@@ -123,7 +123,6 @@ export default function FlightsPage() {
         Price,
       })
     );
-
     setArrivalCity("");
     setArrivalCountry("");
     setDepartureCity("");

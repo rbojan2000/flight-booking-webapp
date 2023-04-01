@@ -5,12 +5,13 @@ import (
 	"flightbooking-app/model/dto"
 	"flightbooking-app/service"
 	"fmt"
-	"github.com/gorilla/mux"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"log"
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/gorilla/mux"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type FlightHandler struct {
@@ -40,7 +41,6 @@ func (handler *FlightHandler) GetFreeFlights(writer http.ResponseWriter, req *ht
 	if err != nil {
 		println("Error while getting flights")
 		writer.WriteHeader(http.StatusExpectationFailed)
-		return
 	}
 
 	writer.Header().Set("Access-Control-Allow-Headers", "Content-Type")
@@ -55,8 +55,6 @@ func (handler *FlightHandler) GetAllAvailable(writer http.ResponseWriter, req *h
 
 	if err != nil {
 		println("Error while getting flights")
-		writer.WriteHeader(http.StatusExpectationFailed)
-		return
 	}
 
 	writer.Header().Set("Access-Control-Allow-Headers", "Content-Type")

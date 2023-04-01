@@ -5,6 +5,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { User } from "./../../app/models/user";
 import agent from "../../app/api/agent";
 import { router } from "../../app/router/Routes";
+import jwt_decode from "jwt-decode";
 interface AccountState {
   user: User | null;
 }
@@ -17,10 +18,23 @@ export const signInUser = createAsyncThunk<User, FieldValues>(
   "account/signInUser",
   async (data, thunkAPI) => {
     try {
-      const userDto = await agent.Account.login(data);
-      console.log(userDto);
-      const { ...user } = userDto;
-      return user;
+      let token = await agent.Account.login(data);
+      token = jwt_decode(token);
+      let role = token["role"];
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          email: token["email"],
+          userID: token["userID"],
+          token: token,
+          roles: role === 1 ? ["USER"] : ["ADMIN"],
+        })
+      );
+      return {
+        email: token["email"],
+        token: token,
+        roles: role === 1 ? ["USER"] : ["ADMIN"],
+      };
     } catch (error: any) {
       return thunkAPI.rejectWithValue({ error: error.data });
     }
@@ -76,14 +90,8 @@ export const accountSlice = createSlice({
     builder.addMatcher(
       isAnyOf(signInUser.fulfilled, fetchCurrentUser.fulfilled),
       (state, action) => {
-        let claims = JSON.parse(atob(action.payload.token.split(".")[1]));
-        let roles =
-          claims[
-            "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
-          ];
         state.user = {
           ...action.payload,
-          roles: typeof roles === "string" ? [roles] : roles,
         };
       }
     );

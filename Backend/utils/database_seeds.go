@@ -43,7 +43,7 @@ func (d *DatabaseSeeds) SeedData() error {
 		Capacity:       160,
 		Price:          228,
 		PassengerCount: 37,
-		Available:      true,
+		Available:      false,
 	}
 
 	tickets := []model.Ticket{}
