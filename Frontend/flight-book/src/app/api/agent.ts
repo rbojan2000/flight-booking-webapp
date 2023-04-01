@@ -63,7 +63,7 @@ function createData(item: any) {
 }
 
 const requests = {
-  get: (url: string, params?: URLSearchParams) =>
+  get: (url: string, data?: FormData, params?: URLSearchParams) =>
     axios.get(url, { params }).then(responseBody),
   post: (url: string, body: {}) => axios.post(url, body).then(responseBody),
   put: (url: string, body: {}) => axios.put(url, body).then(responseBody),
@@ -96,6 +96,17 @@ const Flights = {
   flights: () => requests.get("flights/getAllAvailable"),
   create: (flight: any) => requests.postForm("flights", createData(flight)),
   remove: (id: string) => requests.delete("flights/" + id),
+  search: (params: any) =>
+    requests.get(
+      "flights/getByParams/SearchDepartureCity=" +
+        params.SearchDepartureCity +
+        "&SearchArrivalCity=" +
+        params.SearchArrivalCity +
+        "&SearchDate=" +
+        params.SearchDate +
+        "&SearchPassengerCount=" +
+        params.SearchPassengerCount
+    ),
 };
 
 const Tickets = {

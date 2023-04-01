@@ -113,6 +113,50 @@ func (repo *FlightRepository) FindAllAvailable() ([]*model.Flight, error) {
 	return flights, nil
 }
 
+func (repo *FlightRepository) FindByParams(departureCity string, arrivalCity string, date time.Time, capacity int64) ([]*model.Flight, error) {
+
+	filter := bson.M{"available": true}
+	if departureCity != "" && departureCity != "-1" {
+		filter["departure.city"] = bson.M{"$regex": primitive.Regex{Pattern: departureCity, Options: "i"}}
+	}
+	if arrivalCity != "" && arrivalCity != "-1" {
+		filter["arrival.city"] = bson.M{"$regex": primitive.Regex{Pattern: arrivalCity, Options: "i"}}
+	}
+	if !date.IsZero() && !date.Before(time.Now()) {
+		startOfDay := time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, date.Location())
+		endOfDay := time.Date(date.Year(), date.Month(), date.Day(), 23, 59, 59, 999999999, date.Location())
+
+		filter["date"] = bson.M{"$gte": startOfDay, "$lt": endOfDay}
+	}
+	if capacity > 0 {
+		filter["passengerCount"] = bson.M{"$gte": capacity}
+	}
+
+	cursor, err := repo.Collection.Find(context.Background(), filter)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	defer cursor.Close(context.Background())
+
+	// Prikazivanje rezultata pretrage
+	var results []*model.Flight
+	for cursor.Next(context.Background()) {
+		var flight model.Flight
+		err := cursor.Decode(&flight)
+		if err != nil {
+			return nil, err
+		}
+		results = append(results, &flight)
+	}
+	if err := cursor.Err(); err != nil {
+		return nil, err
+	}
+
+	return results, nil
+}
+
 func (repo *FlightRepository) FindAllAvailableByDateAndBusyness() ([]*model.Flight, error) {
 	now := time.Now()
 

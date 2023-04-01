@@ -63,6 +63,14 @@ func (service *FlightService) GetAllAvailable() ([]*model.Flight, error) {
 	return flights, nil
 }
 
+func (service *FlightService) GetByParams(departureCity string, arrivalCity string, date time.Time, capacity int64) ([]*model.Flight, error) {
+	flights, err := service.FlightRepo.FindByParams(departureCity, arrivalCity, date, capacity)
+	if err != nil {
+		return nil, fmt.Errorf(fmt.Sprintf("There are no flights!"))
+	}
+	return flights, nil
+}
+
 func (service *FlightService) GetById(id primitive.ObjectID) (*model.Flight, error) {
 	flight, err := service.FlightRepo.GetById(id)
 	if err != nil {
