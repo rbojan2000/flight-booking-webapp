@@ -156,3 +156,31 @@ func (repo *FlightRepository) FindByParams(departureCity string, arrivalCity str
 
 	return results, nil
 }
+
+func (repo *FlightRepository) FindAllAvailableByDateAndBusyness() ([]*model.Flight, error) {
+	now := time.Now()
+
+	filter := bson.M{
+		"date":      bson.M{"$gt": now},
+		"available": true,
+	}
+
+	cursor, err := repo.Collection.Find(context.Background(), filter)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(context.Background())
+
+	var flights []*model.Flight
+	for cursor.Next(context.Background()) {
+		var flight model.Flight
+		if err := cursor.Decode(&flight); err != nil {
+			return nil, err
+		}
+		flights = append(flights, &flight)
+	}
+
+	fmt.Print(flights)
+
+	return flights, nil
+}
