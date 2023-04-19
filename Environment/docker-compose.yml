@@ -1,0 +1,49 @@
+version: '3.8'
+services:
+  server:
+    build:
+      context: ../Backend
+      dockerfile: ../Environment/Dockerfile.serverApp
+    image: flight_booking_web_server
+    container_name: flight_booking_server
+    restart: always
+    networks:
+      - servers
+    ports:
+      - 8080:8080
+    depends_on:
+      - flight_booking_database
+
+  flight_booking_database:
+    image: mongo
+    container_name: mongo
+    restart: always
+    networks:
+      - servers
+    ports: 
+      - 4000:27017
+    environment:
+      - MONGO_INITDB_DATABASE=xws
+    volumes:
+      - flight_booking_database-data:/data/db
+
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express
+    restart: always
+    networks:
+      - servers
+    ports:
+      - 8081:8081
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=flight_booking_database
+
+
+volumes:
+  flight_booking_database-data:
+    name: server-database
+
+networks:
+  servers:
+    name: servers
+    driver: bridge

@@ -1,0 +1,149 @@
+
+
+
+.ticket-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem;
+  }
+
+  .ticket-card {
+    position: relative;
+    width: 300px;
+    height: 200px;
+    margin: 0;
+    padding: 1.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    transition: transform 0.2s ease-in-out;
+  }
+
+  .ticket-card:hover {
+    transform: translateY(-5px);
+  }
+
+  .ticket-card:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transform: scale(0.98);
+    transition: transform 0.2s ease-in-out;
+  }
+
+  .ticket-card:hover:before {
+    transform: scale(1);
+  }
+
+  .ticket-card h2 {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+
+  .ticket-card p {
+    font-size: 1rem;
+    margin: 0.5rem 0;
+    color: #666;
+  }
+
+  .ticket-card p:last-child {
+    margin-bottom: 0;
+  }
+
+  .ticket-dialog {
+    max-width: 600px;
+    margin: 20px;
+  }
+  
+  .ticket-dialog-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 16px;
+  }
+  
+  .ticket-dialog-content {
+    margin-bottom: 24px;
+  }
+  
+  .ticket-dialog-price {
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 16px;
+    text-align: right;
+  }
+  
+  .ticket-dialog-actions {
+    padding: 8px 24px;
+  }
+
+
+.my-dialog-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.my-dialog-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+.my-dialog-content h2 {
+  margin-top: 0;
+}
+
+.my-dialog-content p {
+  margin: 10px 0;
+}
+
+.my-dialog-content label {
+  display: block;
+  margin: 10px 0;
+}
+
+.my-dialog-content input[type="number"] {
+  width: 100%;
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+}
+
+.my-dialog-buttons {
+  margin-top: 20px;
+}
+
+.my-dialog-buttons button {
+  background-color: #0077ff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.my-dialog-buttons button:last-of-type {
+  margin-right: 0;
+  background-color: #555;
+}
